@@ -1,0 +1,2 @@
+November 18: Create new Vue folder, study folder structure and orgranization
+November 19
