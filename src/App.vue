@@ -1,8 +1,9 @@
 <script setup>
 import Login from './fms/Auth/Login.vue';
+import Register from './fms/Auth/Register.vue';
 </script>
 
 <template>
-  <Login/>
+  <router-view/>
 </template>
 

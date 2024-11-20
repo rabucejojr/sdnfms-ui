@@ -1,2 +1,2 @@
 November 18: Create new Vue folder, study folder structure and orgranization
-November 19
+November 20: Added vue-router library, login & register ui pages
