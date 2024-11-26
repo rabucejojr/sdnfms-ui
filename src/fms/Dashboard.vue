@@ -110,12 +110,18 @@ onMounted(() => {
             <td class="border p-3">{{ file.uploadedBy }}</td>
             <td class="border p-3">{{ file.date }}</td>
             <td class="border p-3 text-center">
-            <button
-                @click="viewFile(file)"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                >
-                View
-            </button>
+                <button
+                    @click="viewFile(file)"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                    >
+                    Edit
+                </button>
+                <button
+                    @click="viewFile(file)"
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                    >
+                    Delete
+                </button>
             </td>
         </tr>
         </tbody>
