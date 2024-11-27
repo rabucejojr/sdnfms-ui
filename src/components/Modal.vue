@@ -1,5 +1,4 @@
 <script setup>
-import { RiCloseFill } from '@remixicon/vue';
 
 // Props
 const props = defineProps({
@@ -23,7 +22,6 @@ const closeModal = () => emit('close');
       <div class="flex justify-between items-center border-b px-6 py-4">
         <h2 class="text-lg font-semibold text-gray-800">{{ title }}</h2>
             <slot name="header">
-
             </slot>
         </div>
 
