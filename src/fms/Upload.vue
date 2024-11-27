@@ -1,4 +1,5 @@
 <script setup>
+import Modal from '@/components/Modal.vue';
 import { ref, watch } from 'vue';
 
 // Props to control modal visibility and pass initial data

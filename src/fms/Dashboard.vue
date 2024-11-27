@@ -3,6 +3,9 @@
 import { ref, onMounted } from 'vue';
 import View from './View.vue';
 import Upload from './Upload.vue';
+import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line } from '@remixicon/vue';
+import Card from '@/components/Card.vue';
+import Button from '@/components/Button.vue';
 
 // Dummy stats data
 const stats = ref({
@@ -64,32 +67,33 @@ onMounted(() => {
     <!-- Dashboard Header -->
     <header class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-    <button
+    <Button
         @click="goToUpload"
-        class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
+        variant="primary"
     >
-        Upload File
-    </button>
+        <RiUpload2Line/>
+        <!-- Upload File -->
+    </Button>
     </header>
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-    <div class="stat-card bg-blue-500 text-white p-4 rounded shadow">
-        <h2 class="text-lg font-medium">Total Files</h2>
-        <p class="text-4xl font-bold">{{ stats.totalFiles }}</p>
-    </div>
-    <div class="stat-card bg-green-500 text-white p-4 rounded shadow">
-        <h2 class="text-lg font-medium">Total Users</h2>
-        <p class="text-4xl font-bold">{{ stats.totalUsers }}</p>
-    </div>
-    <div class="stat-card bg-yellow-500 text-white p-4 rounded shadow">
-        <h2 class="text-lg font-medium">Recent Uploads</h2>
-        <p class="text-4xl font-bold">{{ stats.recentUploads }}</p>
-    </div>
-    <div class="stat-card bg-red-500 text-white p-4 rounded shadow">
-        <h2 class="text-lg font-medium">Storage Used</h2>
-        <p class="text-4xl font-bold">{{ stats.storageUsed }} GB</p>
-    </div>
+        <Card>
+            <h2 class="text-lg font-medium">Total Files</h2>
+            <p class="text-4xl font-bold">{{ stats.totalFiles }}</p>
+        </Card>
+        <Card bg="bg-green-500">
+            <h2 class="text-lg font-medium">Total Users</h2>
+            <p class="text-4xl font-bold">{{ stats.totalUsers }}</p>
+        </Card>
+        <Card bg="bg-yellow-500">
+            <h2 class="text-lg font-medium">Recent Uploads</h2>
+            <p class="text-4xl font-bold">{{ stats.recentUploads }}</p>
+        </Card>
+        <Card bg="bg-red-500">
+            <h2 class="text-lg font-medium">Storage Used</h2>
+            <p class="text-4xl font-bold">{{ stats.storageUsed }} GB</p>
+        </Card>
     </div>
 
     <!-- Recent Files Table -->
@@ -111,18 +115,18 @@ onMounted(() => {
             <td class="border p-3">{{ file.date }}</td>
             <td class="border p-3 text-center">
                 <div class="flex justify-center space-x-2">
-                    <button
+                    <Button
                         @click="viewFile(file)"
-                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                        variant="primary"
                         >
-                        Edit
-                    </button>
-                    <button
+                        <RiEdit2Line/>
+                    </Button>
+                    <Button
                         @click="viewFile(file)"
-                        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                        variant="danger"
                         >
-                        Delete
-                    </button>
+                        <RiDeleteBin2Line/>
+                    </Button>
                 </div>
             </td>
         </tr>
