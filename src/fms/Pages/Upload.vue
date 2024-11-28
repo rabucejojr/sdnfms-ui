@@ -76,12 +76,22 @@ const handleUpload = () => {
             <p><strong>File Type:</strong> {{ file.type }}</p>
           </div>
           <div>
-            <h4 class="text-gray-700 font-medium">Owner:</h4>
-            <p class="text-gray-800"></p>
+            <input
+            type="text"
+            id="owner"
+            placeholder="Uploaded By "
+            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            required
+          />
           </div>
           <div>
-            <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>
-            <p class="text-gray-800"></p>
+            <input
+            type="date"
+            id="owner"
+            placeholder=""
+            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            required
+          />
           </div>
         </form>
       </div>
