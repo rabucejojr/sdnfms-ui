@@ -1,8 +1,8 @@
 <script setup>
 import Login from './fms/Auth/Login.vue';
 import Register from './fms/Auth/Register.vue';
-import Dashboard from './fms/Dashboard.vue';
-import View from './fms/View.vue';
+import Dashboard from './fms/Pages/Dashboard.vue';
+import View from './fms/Pages/View.vue';
 
 </script>
 
