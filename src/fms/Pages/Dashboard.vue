@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import View from './View.vue';
 import Upload from './Upload.vue';
 import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line } from '@remixicon/vue';
@@ -16,13 +16,12 @@ const stats = ref({
 });
 
 // Dummy recent files data
-const recentFiles = ref([
-  { id: 1, name: 'Project Plan.pdf', uploadedBy: 'John Doe', date: '2024-11-20' },
-  { id: 2, name: 'Budget.xlsx', uploadedBy: 'Jane Smith', date: '2024-11-19' },
-  { id: 3, name: 'Presentation.pptx', uploadedBy: 'Alice Johnson', date: '2024-11-18' },
-  { id: 4, name: 'Notes.txt', uploadedBy: 'Michael Brown', date: '2024-11-17' },
-  { id: 5, name: 'Contract.docx', uploadedBy: 'Sarah Lee', date: '2024-11-16' },
-]);
+const recentFiles = ref([]);
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+// Calculate the total number of pages
+const totalPages = computed(() => Math.ceil(recentFiles.value.length / pageSize.value));
 
 // Modal state
 const isModalOpen = ref(false);
@@ -42,24 +41,36 @@ const goToUpload = () => {
     isUploadModalOpen.value = true;
 };
 
-// const viewFile = (fileId) => {
-//   alert(`Viewing file with ID: ${fileId}`);
-// };
-
-// Fetch data (dummy fetch for now)
-const fetchDashboardData = async () => {
-  // Replace this with an actual API call in production
-  console.log('Fetching data... Dummy data already loaded.');
+// // Fetch data from the JSON file on component mount
+const fetchRecentFiles = async () => {
+  try {
+    const response = await fetch('/files.json'); 
+    if (!response.ok) throw new Error('Failed to fetch recent files');
+    recentFiles.value = await response.json();
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-onMounted(() => {
-  fetchDashboardData();
-});
-</script>
+// Fetch data when the component is mounted
+onMounted(fetchRecentFiles);
 
-<style scoped>
-/* Add any additional custom styles if needed */
-</style>
+
+// Get the files for the current page
+const paginatedFiles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return recentFiles.value.slice(start, end);
+});
+
+// Change the current page
+const goToPage = (page) => {
+  if (page > 0 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
+</script>
 
 
 <template>
@@ -67,13 +78,6 @@ onMounted(() => {
     <!-- Dashboard Header -->
     <header class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-    <Button
-        @click="goToUpload"
-        variant="primary"
-    >
-        <RiUpload2Line/>
-        <!-- Upload File -->
-    </Button>
     </header>
 
     <!-- Stats Overview -->
@@ -97,8 +101,17 @@ onMounted(() => {
     </div>
 
     <!-- Recent Files Table -->
-    <section class="recent-files bg-white p-6 rounded shadow">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Recent Files</h2>
+    <section class="recent-files bg-white p-6 rounded shadow ">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Files </h2>
+        <Button
+            @click="goToUpload"
+            variant="primary"
+        >
+            <RiUpload2Line/>
+            <!-- Upload File -->
+        </Button>
+    </div>
     <table class="w-full border-collapse">
         <thead>
         <tr class="bg-gray-200 text-gray-700">
@@ -109,7 +122,7 @@ onMounted(() => {
         </tr>
         </thead>
         <tbody>
-        <tr v-for="file in recentFiles" :key="file.id" class="odd:bg-white even:bg-gray-50">
+        <tr v-for="file in paginatedFiles" :key="file.id" class="odd:bg-white even:bg-gray-50">
             <td class="border p-3">{{ file.name }}</td>
             <td class="border p-3">{{ file.uploadedBy }}</td>
             <td class="border p-3">{{ file.date }}</td>
@@ -132,6 +145,38 @@ onMounted(() => {
         </tr>
         </tbody>
     </table>
+
+        <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-4">
+      <button
+        class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        :disabled="currentPage === 1"
+        @click="goToPage(currentPage - 1)"
+      >
+        Previous
+      </button>
+
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        @click="goToPage(page)"
+        class="px-4 py-2 rounded"
+        :class="{
+          'bg-blue-500 text-white': page === currentPage,
+          'bg-gray-300 hover:bg-gray-400': page !== currentPage,
+        }"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        :disabled="currentPage === totalPages"
+        @click="goToPage(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
 
     <View
       :isOpen="isModalOpen"

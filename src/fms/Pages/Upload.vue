@@ -75,6 +75,14 @@ const handleUpload = () => {
             <p><strong>File Size:</strong> {{ (file.size / 1024).toFixed(2) }} KB</p>
             <p><strong>File Type:</strong> {{ file.type }}</p>
           </div>
+          <div>
+            <h4 class="text-gray-700 font-medium">Owner:</h4>
+            <p class="text-gray-800"></p>
+          </div>
+          <div>
+            <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>
+            <p class="text-gray-800"></p>
+          </div>
         </form>
       </div>
 
