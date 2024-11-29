@@ -34,6 +34,13 @@ const viewFile = (file) => {
   isModalOpen.value = true;
 };
 
+const deleteFile = (file) =>{
+  // File Deletion
+  console.log('file delete');
+  selectedFile.value = file;
+  isModalOpen.value = true;
+};
+
 
 // Placeholder functions for interactivity
 const goToUpload = () => {
@@ -135,7 +142,7 @@ const goToPage = (page) => {
                         <RiEdit2Line/>
                     </Button>
                     <Button
-                        @click="viewFile(file)"
+                        @click="deleteFile(file)"
                         variant="danger"
                         >
                         <RiDeleteBin2Line/>

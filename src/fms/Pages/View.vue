@@ -26,7 +26,7 @@ const closeModal = () => emit('close');
     <div v-if="isOpen" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
         <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
 
-        <Modal isOpen title="File Details" closeModal="closeModal">
+        <Modal :isOpen="isOpen" title="File Details" @close="closeModal">
             <template #header>
                 <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
                   <RiCloseFill />
@@ -36,8 +36,8 @@ const closeModal = () => emit('close');
                 <!-- Modal Body -->
                 <div class="space-y-4">
                     <div>
-                    <h4 class="text-gray-700 font-medium">File Name:</h4>
-                    <p class="text-gray-800">{{ file.name }}</p>
+                    <input type="file" class="text-gray-700 font-medium"/>
+                    <!-- <input type="file"class="text-gray-800">{{ file.name }}</input> -->
                     </div>
                     <div>
                     <h4 class="text-gray-700 font-medium">Owner:</h4>

@@ -47,7 +47,7 @@ const handleUpload = () => {
     <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
       <!-- Header -->
       <div class="flex justify-between items-center border-b px-4 py-3">
-        <h2 class="text-lg font-semibold text-gray-800">Upload a File</h2>
+        <h2 class="text-lg font-semibold text-gray-800">Upload</h2>
         <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -60,7 +60,6 @@ const handleUpload = () => {
         <!-- File Input -->
         <form @submit.prevent="handleUpload" class="space-y-4">
           <div>
-            <label for="file" class="block text-gray-700 font-medium mb-2">Choose a file:</label>
             <input
               type="file"
               id="file"
