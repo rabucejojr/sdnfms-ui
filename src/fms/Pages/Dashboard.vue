@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from 'vue';
 import View from './View.vue';
 import Upload from './Upload.vue';
-import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line } from '@remixicon/vue';
+import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line, RiEyeLine } from '@remixicon/vue';
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 
@@ -113,7 +113,7 @@ const goToPage = (page) => {
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Files </h2>
         <Button
             @click="goToUpload"
-            variant="primary"
+            bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
             <RiUpload2Line/>
             <!-- Upload File -->
@@ -137,13 +137,19 @@ const goToPage = (page) => {
                 <div class="flex justify-center space-x-2">
                     <Button
                         @click="viewFile(file)"
-                        variant="primary"
+                        bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
+                        >
+                        <RiEyeLine/>
+                    </Button>
+                    <Button
+                        @click="viewFile(file)"
+                        bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                         >
                         <RiEdit2Line/>
                     </Button>
                     <Button
                         @click="deleteFile(file)"
-                        variant="danger"
+                        bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
                         >
                         <RiDeleteBin2Line/>
                     </Button>

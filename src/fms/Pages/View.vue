@@ -52,13 +52,13 @@ const closeModal = () => emit('close');
             <template #footer>
                 <!-- Modal Footer -->
                     <Button
-                    variant="primary"
+                    bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                     >
                     Update
                     </Button>
                     <Button
                     @click="closeModal"
-                    variant="danger"
+                    bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
                     >
                     Close
                     </Button>       

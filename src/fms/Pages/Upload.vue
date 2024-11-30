@@ -1,6 +1,7 @@
 <script setup>
 import Modal from '@/components/Modal.vue';
 import { ref, watch } from 'vue';
+import Button from '@/components/Button.vue';
 
 // Props to control modal visibility and pass initial data
 const props = defineProps({
@@ -96,20 +97,22 @@ const handleUpload = () => {
       </div>
 
       <!-- Footer -->
-      <div class="flex justify-end border-t px-4 py-3">
-        <button
-          @click="closeModal"
-          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-        >
-          Close
-        </button>
-        <button
-          type="submit"
-          @click="handleUpload"
-          class="bg-blue-500 text-white px-4 py-2 ml-2 rounded hover:bg-blue-600 transition"
-        >
-          Upload
-        </button>
+      <div class="">
+        <div class="flex justify-end space-x-2 px-4 py-3">
+          <Button
+            type="submit"
+            @click="handleUpload"
+            bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+          >
+            Upload
+          </Button>
+          <Button
+            @click="closeModal"
+            bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
+          >
+            Close
+          </Button>
+        </div>
       </div>
     </div>
   </div>
