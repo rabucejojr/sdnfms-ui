@@ -181,6 +181,30 @@ const goToPage = (page) => {
         </table>
       </div>
 
+      <!-- Modals -->
+      <Update
+      :isOpen="isEditModalOpen"
+      :file="selectedFile"
+      @close="isEditModalOpen = false"
+    />
+
+    <Preview
+      :isOpen="isPreviewModalOpen"
+      :file="selectedFile"
+      @close="isPreviewModalOpen = false"
+    />
+
+    <Delete
+      :isOpen="isDeleteModalOpen"
+      :file="selectedFile"
+      @close="isDeleteModalOpen = false"
+    />
+
+    <Upload
+      :isOpen="isUploadModalOpen"
+      @close="isUploadModalOpen = false"
+    />
+
       <!-- Pagination -->
       <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
         <button
