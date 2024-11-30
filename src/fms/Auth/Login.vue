@@ -45,7 +45,7 @@ import { ref } from "vue";
             required
           />
         </div>
-        <div class="flex items-center mt-6">
+        <div class="flex items-center mt-6 space-x-4">
                 <button
                     type="submit"
                     class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
@@ -54,9 +54,15 @@ import { ref } from "vue";
                 </button>
                 <router-link
                     to="/register"
-                    class="text-blue-500 hover:underline focus:outline-none focus:ring focus:ring-blue-300 ml-6"
+                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
                 >
                     Register
+                </router-link>
+                <router-link
+                    to="/dashboard"
+                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                >
+                    Dashboard
                 </router-link>
             </div>
       </form>
