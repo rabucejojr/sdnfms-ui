@@ -90,139 +90,126 @@ const goToPage = (page) => {
 
 
 <template>
-<div class="dashboard p-6 bg-gray-100 min-h-screen">
+  <div class="dashboard p-4 sm:p-6 bg-gray-100 min-h-screen">
     <!-- Dashboard Header -->
-    <header class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Dashboard</h1>
     </header>
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <Card>
-            <h2 class="text-lg font-medium">Total Files</h2>
-            <p class="text-4xl font-bold">{{ stats.totalFiles }}</p>
-        </Card>
-        <Card bg="bg-green-500">
-            <h2 class="text-lg font-medium">Total Users</h2>
-            <p class="text-4xl font-bold">{{ stats.totalUsers }}</p>
-        </Card>
-        <Card bg="bg-yellow-500">
-            <h2 class="text-lg font-medium">Recent Uploads</h2>
-            <p class="text-4xl font-bold">{{ stats.recentUploads }}</p>
-        </Card>
-        <Card bg="bg-red-500">
-            <h2 class="text-lg font-medium">Storage Used</h2>
-            <p class="text-4xl font-bold">{{ stats.storageUsed }} GB</p>
-        </Card>
+      <Card>
+        <h2 class="text-sm sm:text-lg font-medium">Total Files</h2>
+        <p class="text-3xl sm:text-4xl font-bold">{{ stats.totalFiles }}</p>
+      </Card>
+      <Card bg="bg-green-500">
+        <h2 class="text-sm sm:text-lg font-medium">Total Users</h2>
+        <p class="text-3xl sm:text-4xl font-bold">{{ stats.totalUsers }}</p>
+      </Card>
+      <Card bg="bg-yellow-500">
+        <h2 class="text-sm sm:text-lg font-medium">Recent Uploads</h2>
+        <p class="text-3xl sm:text-4xl font-bold">{{ stats.recentUploads }}</p>
+      </Card>
+      <Card bg="bg-red-500">
+        <h2 class="text-sm sm:text-lg font-medium">Storage Used</h2>
+        <p class="text-3xl sm:text-4xl font-bold">{{ stats.storageUsed }} GB</p>
+      </Card>
     </div>
 
     <!-- Recent Files Table -->
-    <section class="recent-files bg-white p-6 rounded shadow ">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Files </h2>
+    <section class="recent-files bg-white p-4 sm:p-6 rounded shadow">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+        <h2 class="text-xl sm:text-2xl font-semibold text-gray-800">Files</h2>
         <Button
-            @click="goToUpload"
-            bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          @click="goToUpload"
+          bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center space-x-2"
         >
-            <RiUpload2Line/>
-            <!-- Upload File -->
+          <span>File Upload</span>
+          <RiUpload2Line />
         </Button>
-    </div>
-    <table class="w-full border-collapse">
-        <thead>
-        <tr class="bg-gray-200 text-gray-700">
-            <th class="border p-3 text-left">File Name</th>
-            <th class="border p-3 text-left">Uploaded By</th>
-            <th class="border p-3 text-left">Date</th>
-            <th class="border p-3 text-center">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="file in paginatedFiles" :key="file.id" class="odd:bg-white even:bg-gray-50">
-            <td class="border p-3">{{ file.name }}</td>
-            <td class="border p-3">{{ file.uploadedBy }}</td>
-            <td class="border p-3">{{ file.date }}</td>
-            <td class="border p-3 text-center">
-                <div class="flex justify-center space-x-2">
-                    <Button
-                        @click="previewFile(file)"
-                        bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
-                        >
-                        <RiEyeLine/>
-                    </Button>
-                    <Button
-                        @click="updateFile(file)"
-                        bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                        >
-                        <RiEdit2Line/>
-                    </Button>
-                    <Button
-                        @click="deleteFile(file)"
-                        bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-                        >
-                        <RiDeleteBin2Line/>
-                    </Button>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700 text-sm sm:text-base">
+              <th class="border p-3 text-left">File Name</th>
+              <th class="border p-3 text-left">Uploaded By</th>
+              <th class="border p-3 text-left">Date</th>
+              <th class="border p-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="file in paginatedFiles"
+              :key="file.id"
+              class="odd:bg-white even:bg-gray-50 text-sm sm:text-base"
+            >
+              <td class="border p-3">{{ file.name }}</td>
+              <td class="border p-3">{{ file.uploadedBy }}</td>
+              <td class="border p-3">{{ file.date }}</td>
+              <td class="border p-3 text-center">
+                <div class="flex flex-wrap justify-center space-x-2 sm:space-x-2 space-y-2 sm:space-y-0">
+                  <!-- Preview Button -->
+                  <Button
+                    @click="previewFile(file)"
+                    bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded sm:w-auto"
+                  >
+                    <RiEyeLine />
+                  </Button>
+
+                  <!-- Update Button -->
+                  <Button
+                    @click="updateFile(file)"
+                    bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded sm:w-auto"
+                  >
+                    <RiEdit2Line />
+                  </Button>
+
+                  <!-- Delete Button -->
+                  <Button
+                    @click="deleteFile(file)"
+                    bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded sm:w-auto"
+                  >
+                    <RiDeleteBin2Line />
+                  </Button>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Pagination -->
-    <div class="flex justify-center items-center space-x-2 mt-4">
-      <button
-        class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-        :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)"
-      >
-        Previous
-      </button>
-
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="goToPage(page)"
-        class="px-4 py-2 rounded"
-        :class="{
-          'bg-blue-500 text-white': page === currentPage,
-          'bg-gray-300 hover:bg-gray-400': page !== currentPage,
-        }"
-      >
-        {{ page }}
-      </button>
-
-      <button
-        class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-        :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)"
-      >
-        Next
-      </button>
-    </div>
-
-    <Update
-      :isOpen="isEditModalOpen"
-      :file="selectedFile"
-      @close="isEditModalOpen = false"
-    />
-
-    <Preview
-      :isOpen="isPreviewModalOpen"
-      :file="selectedFile"
-      @close="isPreviewModalOpen = false"
-    />
-
-    <Delete
-      :isOpen="isDeleteModalOpen"
-      :file="selectedFile"
-      @close="isDeleteModalOpen = false"
-    />
-
-    <Upload
-      :isOpen="isUploadModalOpen"
-      @close="isUploadModalOpen = false"
-    />
-
+      <!-- Pagination -->
+      <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
+        <button
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+        >
+          Previous
+        </button>
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="goToPage(page)"
+          class="px-4 py-2 rounded"
+          :class="{
+            'bg-blue-500 text-white': page === currentPage,
+            'bg-gray-300 hover:bg-gray-400': page !== currentPage,
+          }"
+        >
+          {{ page }}
+        </button>
+        <button
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
+        >
+          Next
+        </button>
+      </div>
     </section>
-</div>
+  </div>
 </template>
