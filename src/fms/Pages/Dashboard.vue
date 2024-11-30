@@ -1,8 +1,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import View from './View.vue';
+import Update from './Update.vue';
 import Upload from './Upload.vue';
+import Delete from './Delete.vue'
+import Preview from './Preview.vue'
 import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line, RiEyeLine } from '@remixicon/vue';
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
@@ -24,21 +26,28 @@ const pageSize = ref(10);
 const totalPages = computed(() => Math.ceil(recentFiles.value.length / pageSize.value));
 
 // Modal state
-const isModalOpen = ref(false);
+const isPreviewModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+const isEditModalOpen = ref(false);
 const isUploadModalOpen = ref(false);
 const selectedFile = ref({});
 
 // Open modal with file data
-const viewFile = (file) => {
+const updateFile = (file) => {
   selectedFile.value = file;
-  isModalOpen.value = true;
+  isEditModalOpen.value = true;
+};
+
+const previewFile = (file) => {
+  selectedFile.value = file;
+  isPreviewModalOpen.value = true;
 };
 
 const deleteFile = (file) =>{
   // File Deletion
   console.log('file delete');
   selectedFile.value = file;
-  isModalOpen.value = true;
+  isDeleteModalOpen.value = true;
 };
 
 
@@ -136,13 +145,13 @@ const goToPage = (page) => {
             <td class="border p-3 text-center">
                 <div class="flex justify-center space-x-2">
                     <Button
-                        @click="viewFile(file)"
+                        @click="previewFile(file)"
                         bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
                         >
                         <RiEyeLine/>
                     </Button>
                     <Button
-                        @click="viewFile(file)"
+                        @click="updateFile(file)"
                         bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                         >
                         <RiEdit2Line/>
@@ -191,10 +200,22 @@ const goToPage = (page) => {
       </button>
     </div>
 
-    <View
-      :isOpen="isModalOpen"
+    <Update
+      :isOpen="isEditModalOpen"
       :file="selectedFile"
-      @close="isModalOpen = false"
+      @close="isEditModalOpen = false"
+    />
+
+    <Preview
+      :isOpen="isPreviewModalOpen"
+      :file="selectedFile"
+      @close="isPreviewModalOpen = false"
+    />
+
+    <Delete
+      :isOpen="isDeleteModalOpen"
+      :file="selectedFile"
+      @close="isDeleteModalOpen = false"
     />
 
     <Upload

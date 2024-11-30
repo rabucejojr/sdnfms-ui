@@ -26,7 +26,7 @@ const closeModal = () => emit('close');
     <div v-if="isOpen" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
         <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
 
-        <Modal :isOpen="isOpen" title="File Details" @close="closeModal">
+        <Modal :isOpen="isOpen" title="File Update" @close="closeModal">
             <template #header>
                 <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
                   <RiCloseFill />
@@ -64,12 +64,6 @@ const closeModal = () => emit('close');
                     </Button>       
             </template>
         </Modal>
-
-        <!-- Modal Header -->
-
-
-
-
 
         </div>
     </div>
