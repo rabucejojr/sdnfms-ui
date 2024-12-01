@@ -92,7 +92,7 @@ const goToPage = (page) => {
 <template>
   <div class="dashboard p-4 sm:p-6 bg-gray-100 min-h-screen">
     <!-- Dashboard Header -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+    <header class="mt-12 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Dashboard</h1>
     </header>
 
