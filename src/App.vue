@@ -9,8 +9,8 @@ import './assets/base.css'
 </script>
 
 <template>
-  <!-- <router-view/> -->
-   <Navbar/>
+   <Navbar/>  
+  <router-view/>
    <!-- <Dashboard/> -->
 </template>
 
