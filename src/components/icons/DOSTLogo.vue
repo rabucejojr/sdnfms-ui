@@ -1,5 +1,5 @@
 <template>
     <div>
-        <img src="/src/assets//logo.png" alt="" srcset="">
+        <img src="@/assets/dostlogo.png" alt="" srcset="">
     </div>
 </template>
