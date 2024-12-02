@@ -6,7 +6,7 @@ import Dashboard from '../Pages/Dashboard.vue';
 const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/dashboard', component: Dashboard }, 
+  { path: '/dashboard', component: Dashboard, props:{padding: 'mt-2'} }, 
   { path: "/", redirect: "/login" }, 
 ]
 
