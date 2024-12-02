@@ -1,3 +1,9 @@
 November 18: Create new Vue folder, study folder structure and orgranization
 November 19: vue-router library
 November 20: login & register ui pages
+November 21: add custom card component
+November 22: add dummy json files for logging purposes
+November 25: 
+November 28: add custom navigation
+December 02: create header component with timestamp
+December 03: 
