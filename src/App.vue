@@ -11,7 +11,7 @@ import Header from './components/Header.vue';
 
 <template>
    <Navbar/>  
-   <Header pos="mt-12"/>
+   <Header pos="mt-12 "/>
   <router-view/>
 </template>
 

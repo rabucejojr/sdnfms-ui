@@ -28,31 +28,30 @@ onMounted(() => {
 </script>
 
 <template>
-    <header :class="`${pos} bg-white-800 text-black p-4`">
-      <div class="container mx-auto flex justify-between items-center">
-        <!-- Logo and Text -->
-        <div class="flex items-center space-x-4">
-          <img
-            src="@/assets/dostlogo.png"
-            alt="DOST Logo"
-              style="width: 100px; height: 100px;"
-  class="rounded"
-          />
-          <div>
-            <h1 class="font-bold uppercase text-sm">Republic of the Philippines</h1>
-            <h2 class="text-lg font-bold">Department of Science and Technology</h2>
-            <h3 class="text-blue-500 text-xl font-semibold">PSTO - Surigao del Norte</h3>
-          </div>
-        </div>
-  
-        <!-- Date and Time -->
-        <div class="text-right text-sm">
-          <p>Philippine Standard Time:</p>
-          <p>{{ currentDateTime }}</p>
+  <header :class="`${pos} bg-white text-black p-4`">
+    <div class="container mx-auto flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+      <!-- Logo and Text -->
+      <div class="flex items-center space-x-4">
+        <img
+          src="@/assets/dostlogo.png"
+          alt="DOST Logo"
+          class="rounded w-24 h-24 lg:w-32 lg:h-32"
+        />
+        <div class="text-center lg:text-left">
+          <h1 class="font-bold uppercase text-xs lg:text-sm">Republic of the Philippines</h1>
+          <h2 class="text-base lg:text-lg font-bold">Department of Science and Technology</h2>
+          <h3 class="text-blue-500 text-lg lg:text-xl font-semibold">PSTO - Surigao del Norte</h3>
         </div>
       </div>
-    </header>
-  </template>
+
+      <!-- Date and Time -->
+      <div class="text-center lg:text-right text-sm">
+        <p>Philippine Standard Time:</p>
+        <p>{{ currentDateTime }}</p>
+      </div>
+    </div>
+  </header>
+</template>
   
 
   
