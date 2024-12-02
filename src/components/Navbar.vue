@@ -20,7 +20,7 @@ nav div {
 
 <template>
   <nav class="bg-blue-500 text-white p-4 fixed top-0 w-full z-10">
-    <div class="container mx-auto flex justify-between items-center">
+    <div class="ml-3 mx-auto flex justify-between items-center">
       <!-- Logo -->
       <div class="text-xl font-bold">
         <router-link to="/" class="hover:underline">DOST SDN FMS</router-link>
@@ -37,7 +37,7 @@ nav div {
       <!-- Navigation Links -->
       <div
         :class="[
-          'absolute lg:static top-16 left-0 w-full lg:w-auto bg-gray-300 lg:bg-transparent lg:flex lg:items-center space-y-4 lg:space-y-0 lg:space-x-6',
+          'absolute lg:static top-16 left-0 w-full lg:w-auto bg-stone-400 lg:bg-transparent lg:flex lg:items-center space-y-4 lg:space-y-0 lg:space-x-6',
           isMenuOpen ? 'block' : 'hidden',
         ]"
       >
