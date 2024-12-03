@@ -8,12 +8,13 @@ import Preview from './Preview.vue'
 import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line, RiEyeLine } from '@remixicon/vue';
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
+import Header from '@/components/Header.vue';
 
 
 defineProps({
   padding:{
     type: String,
-    default: 'mt-12',
+    default: 'mt-2',
 
   }
 });
@@ -98,6 +99,8 @@ const goToPage = (page) => {
 
 
 <template>
+  
+  <Header/>
   <div class="dashboard p-4 sm:p-6 bg-gray-100 min-h-screen">
     <!-- Dashboard Header -->
     <header :class="`${padding} flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0`">

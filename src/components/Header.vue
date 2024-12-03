@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue';
 const currentDateTime = ref('');
 
 defineProps({
-    pos:{type:String,default:'mt-4'},
+    pos:{type:String,default:''},
 })
 
 const updateDateTime = () => {

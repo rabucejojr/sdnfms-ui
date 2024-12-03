@@ -61,13 +61,13 @@ alert("Registration submitted!");
             <div class="flex items-center mt-6">
                 <button
                     type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300"
                 >
                     Register
                 </button>
                 <router-link
                     to="/login"
-                    class="text-blue-500 hover:underline focus:outline-none focus:ring focus:ring-blue-300 ml-6"
+                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 hover:underline focus:outline-none focus:ring focus:ring-blue-300 ml-6"
                 >
                     Login
                 </router-link>

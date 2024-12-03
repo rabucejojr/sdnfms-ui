@@ -10,8 +10,8 @@ import Header from './components/Header.vue';
 </script>
 
 <template>
-   <Navbar/>  
-   <Header pos="mt-12 "/>
+   <!-- <Navbar/>  
+   <Header pos="mt-12 "/> -->
   <router-view/>
 </template>
 
