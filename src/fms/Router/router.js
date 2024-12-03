@@ -1,12 +1,12 @@
 import { createMemoryHistory, createRouter } from 'vue-router'
 import Login from '../Auth/Login.vue';
 import Register from '../Auth/Register.vue';
-import Dashboard from '../Pages/Dashboard.vue';
+import Home from '../Pages/Home.vue';
 
 const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/dashboard', component: Dashboard, props:{padding: 'mt-2'} }, 
+  { path: '/home', component: Home }, 
   { path: "/", redirect: "/login" }, 
 ]
 
