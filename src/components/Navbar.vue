@@ -19,11 +19,13 @@ nav div {
 </style>
 
 <template>
-  <nav class="bg-blue-500 text-white p-4 fixed top-0 w-full z-10">
+  <nav class="bg-slate-200 text-black p-3 fixed top-0 w-full z-4">
     <div class="ml-3 mx-auto flex justify-between items-center">
       <!-- Logo -->
       <div class="text-xl font-bold">
-        <router-link to="/" class="hover:underline">DOST SDN FMS</router-link>
+        <a href="https://www.gov.ph/" target="_blank" rel="noopener noreferrer">
+          GOV.PH
+        </a>
       </div>
 
       <!-- Hamburger Menu (Mobile) -->
@@ -41,25 +43,53 @@ nav div {
           isMenuOpen ? 'block' : 'hidden',
         ]"
       >
+      <router-link
+          to="/register"
+          class="block lg:inline hover:underline px-4 lg:px-0"
+          exact
+        >
+          Home
+        </router-link>
         <router-link
           to="/register"
           class="block lg:inline hover:underline px-4 lg:px-0"
           exact
         >
-          Register
+          Transparency
         </router-link>
+        <router-link
+          to="/register"
+          class="block lg:inline hover:underline px-4 lg:px-0"
+          exact
+        >
+          About Us
+        </router-link>
+        <router-link
+          to="/register"
+          class="block lg:inline hover:underline px-4 lg:px-0"
+          exact
+        >
+          Contact Us
+        </router-link>
+        <!-- <router-link
+          to="/register"
+          class="block lg:inline hover:underline px-4 lg:px-0"
+          exact
+        >
+          Register
+        </router-link> -->
         <router-link
           to="/login"
           class="block lg:inline hover:underline px-4 lg:px-0"
         >
           Login
         </router-link>
-        <router-link
+        <!-- <router-link
           to="/dashboard"
           class="block lg:inline hover:underline px-4 lg:px-0"
         >
           Dashboard
-        </router-link>
+        </router-link> -->
       </div>
     </div>
   </nav>

@@ -28,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header :class="`${pos} bg-white text-black p-4`">
+  <header :class="`${pos} bg-blue-500 text-black p-3`">
     <div class="container mx-auto flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
       <!-- Logo and Text -->
       <div class="flex items-center space-x-4">
@@ -40,7 +40,7 @@ onMounted(() => {
         <div class="text-center lg:text-left">
           <h1 class="font-bold uppercase text-xs lg:text-sm">Republic of the Philippines</h1>
           <h2 class="text-base lg:text-lg font-bold">Department of Science and Technology</h2>
-          <h3 class="text-blue-500 text-lg lg:text-xl font-semibold">PSTO - Surigao del Norte</h3>
+          <h3 class="text-yellow-300 text-lg lg:text-xl font-semibold">PSTO - Surigao del Norte</h3>
         </div>
       </div>
 
