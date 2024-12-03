@@ -1,20 +1,27 @@
 <script setup>
 import { ref } from "vue";
+import {useRouter} from 'vue-router';
 
-    const email = ref("");
-    const password = ref("");
+const email = ref("");
+const password = ref("");
+const router = useRouter();
 
-    const handleSubmit = () => {
-      if (!email.value || !password.value) {
-        alert("Please fill in all fields!");
-        return;
-      }
+const handleSubmit = () => {
+  try {
+    // Simulated API call (replace this with your actual API request)
+    const isAuthenticated = email.value === 'admin@example.com' && password.value === 'password123';
 
-      // Example login logic
-      console.log("Email:", email.value);
-      console.log("Password:", password.value);
-      alert("Login submitted!");
-    };
+    if (isAuthenticated) {
+      // Redirect to the dashboard
+      router.push('/home');
+    } else {
+      alert('Invalid email or password.');
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('An error occurred during login.');
+  }
+};
 
 </script>
 
@@ -54,15 +61,9 @@ import { ref } from "vue";
                 </button>
                 <router-link
                     to="/register"
-                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300"
                 >
                     Register
-                </router-link>
-                <router-link
-                    to="/dashboard"
-                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-                >
-                    Dashboard
                 </router-link>
             </div>
       </form>
