@@ -44,6 +44,10 @@ const closeModal = () => emit('close');
                       <p class="text-gray-800">{{ file.uploadedBy }}</p>
                     </div>
                     <div>
+                      <h4 class="text-gray-700 font-medium">Category:</h4>
+                      <p class="text-gray-800">{{ file.category }}</p>
+                    </div>
+                    <div>
                       <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>
                       <p class="text-gray-800">{{ file.date }}</p>
                     </div>
