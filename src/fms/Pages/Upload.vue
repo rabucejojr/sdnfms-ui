@@ -66,23 +66,35 @@ const handleUpload = () => {
               id="file"
               @change="onFileChange"
               class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
+              multiple
             />
           </div>
 
           <!-- File Preview -->
-          <div v-if="file" class="border rounded p-4 bg-gray-50">
+          <!-- <div v-if="file" class="border rounded p-4 bg-gray-50">
             <p><strong>File Name:</strong> {{ file.name }}</p>
             <p><strong>File Size:</strong> {{ (file.size / 1024).toFixed(2) }} KB</p>
             <p><strong>File Type:</strong> {{ file.type }}</p>
-          </div>
+          </div> -->
           <div>
             <input
             type="text"
             id="owner"
-            placeholder="Uploaded By "
+            placeholder="Uploader "
             class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
             required
           />
+          </div>
+          <div>
+            <select
+              id="owner"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            >
+              <option value="setup">SETUP</option>
+              <option value="gia">GIA</option>
+              <option value="others">Others</option>
+            </select>
           </div>
           <div>
             <input

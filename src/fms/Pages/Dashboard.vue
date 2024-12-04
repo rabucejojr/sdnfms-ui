@@ -1,23 +1,21 @@
-
 <script setup>
-import { ref, onMounted, computed,defineProps } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Update from './Update.vue';
 import Upload from './Upload.vue';
-import Delete from './Delete.vue'
-import Preview from './Preview.vue'
-import { RiEdit2Line,RiDeleteBin2Line,RiUpload2Line, RiEyeLine } from '@remixicon/vue';
+import Delete from './Delete.vue';
+import Preview from './Preview.vue';
+import { RiEdit2Line, RiDeleteBin2Line, RiUpload2Line, RiEyeLine,RiSearchLine } from '@remixicon/vue';
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import Header from '@/components/Header.vue';
 
-
 defineProps({
-  padding:{
+  padding: {
     type: String,
     default: 'mt-2',
-
-  }
+  },
 });
+
 // Dummy stats data
 const stats = ref({
   totalFiles: 120,
@@ -31,45 +29,41 @@ const recentFiles = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 
-// Calculate the total number of pages
-const totalPages = computed(() => Math.ceil(recentFiles.value.length / pageSize.value));
+// Search query
+const searchQuery = ref('');
 
-// Modal state
-const isPreviewModalOpen = ref(false);
-const isDeleteModalOpen = ref(false);
-const isEditModalOpen = ref(false);
-const isUploadModalOpen = ref(false);
-const selectedFile = ref({});
+// Compute filtered files based on search query
+const filteredFiles = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return recentFiles.value.filter(
+    (file) =>
+      file.name.toLowerCase().includes(query) ||
+      file.uploadedBy.toLowerCase().includes(query) ||
+      file.category.toLowerCase().includes(query)
+  );
+});
 
-// Open modal with file data
-const updateFile = (file) => {
-  selectedFile.value = file;
-  isEditModalOpen.value = true;
+// Calculate the total number of pages based on filtered files
+const totalPages = computed(() => Math.ceil(filteredFiles.value.length / pageSize.value));
+
+// Get the files for the current page
+const paginatedFiles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredFiles.value.slice(start, end);
+});
+
+// Change the current page
+const goToPage = (page) => {
+  if (page > 0 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
 };
 
-const previewFile = (file) => {
-  selectedFile.value = file;
-  isPreviewModalOpen.value = true;
-};
-
-const deleteFile = (file) =>{
-  // File Deletion
-  console.log('file delete');
-  selectedFile.value = file;
-  isDeleteModalOpen.value = true;
-};
-
-
-// Placeholder functions for interactivity
-const goToUpload = () => {
-    console.log('upload clicked');
-    isUploadModalOpen.value = true;
-};
-
-// // Fetch data from the JSON file on component mount
+// Fetch data from the JSON file on component mount
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('/files.json'); 
+    const response = await fetch('/files.json');
     if (!response.ok) throw new Error('Failed to fetch recent files');
     recentFiles.value = await response.json();
   } catch (error) {
@@ -80,33 +74,37 @@ const fetchRecentFiles = async () => {
 // Fetch data when the component is mounted
 onMounted(fetchRecentFiles);
 
+// Modal state and methods remain unchanged
+const isPreviewModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+const isUploadModalOpen = ref(false);
+const selectedFile = ref({});
 
-// Get the files for the current page
-const paginatedFiles = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return recentFiles.value.slice(start, end);
-});
-
-// Change the current page
-const goToPage = (page) => {
-  if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
+const updateFile = (file) => {
+  selectedFile.value = file;
+  isEditModalOpen.value = true;
 };
 
+const previewFile = (file) => {
+  selectedFile.value = file;
+  isPreviewModalOpen.value = true;
+};
+
+const deleteFile = (file) => {
+  selectedFile.value = file;
+  isDeleteModalOpen.value = true;
+};
+
+const goToUpload = () => {
+  isUploadModalOpen.value = true;
+};
 </script>
 
 
 <template>
-  
-  <Header/>
-  <div class="dashboard p-4 sm:p-6 bg-gray-100 min-h-screen">
-    <!-- Dashboard Header -->
-    <header :class="`${padding} flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0`">
-      <!-- <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Dashboard</h1> -->
-    </header>
-
+  <Header />
+  <div class="p-4 sm:p-6 bg-gray-100 min-h-screen">
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       <Card>
@@ -130,7 +128,24 @@ const goToPage = (page) => {
     <!-- Recent Files Table -->
     <section class="recent-files bg-white p-4 sm:p-6 rounded shadow">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
-        <h2 class="text-xl sm:text-2xl font-semibold text-gray-800">Files</h2>
+        <!-- <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search files..."
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        /> -->
+        <div class="relative">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search files..."
+            class="px-4 py-2 pl-10 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
+          />
+          <RiSearchLine
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            size="20"
+          />
+      </div>
         <Button
           @click="goToUpload"
           bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center space-x-2"
@@ -140,7 +155,6 @@ const goToPage = (page) => {
         </Button>
       </div>
 
-      <!-- Table -->
       <div class="overflow-x-auto">
         <table class="w-full border-collapse">
           <thead>
@@ -148,6 +162,7 @@ const goToPage = (page) => {
               <th class="border p-3 text-left">File Name</th>
               <th class="border p-3 text-left">Uploaded By</th>
               <th class="border p-3 text-left">Date</th>
+              <th class="border p-3 text-left">Category</th>
               <th class="border p-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -160,29 +175,16 @@ const goToPage = (page) => {
               <td class="border p-3">{{ file.name }}</td>
               <td class="border p-3">{{ file.uploadedBy }}</td>
               <td class="border p-3">{{ file.date }}</td>
+              <td class="border p-3">{{ file.category }}</td>
               <td class="border p-3 text-center">
                 <div class="flex flex-wrap justify-center space-x-2 sm:space-x-2 space-y-2 sm:space-y-0">
-                  <!-- Preview Button -->
-                  <Button
-                    @click="previewFile(file)"
-                    bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded sm:w-auto"
-                  >
+                  <Button @click="previewFile(file)" bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded sm:w-auto">
                     <RiEyeLine />
                   </Button>
-
-                  <!-- Update Button -->
-                  <Button
-                    @click="updateFile(file)"
-                    bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded sm:w-auto"
-                  >
+                  <Button @click="updateFile(file)" bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded sm:w-auto">
                     <RiEdit2Line />
                   </Button>
-
-                  <!-- Delete Button -->
-                  <Button
-                    @click="deleteFile(file)"
-                    bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded sm:w-auto"
-                  >
+                  <Button @click="deleteFile(file)" bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded sm:w-auto">
                     <RiDeleteBin2Line />
                   </Button>
                 </div>
@@ -190,33 +192,31 @@ const goToPage = (page) => {
             </tr>
           </tbody>
         </table>
+        <!-- Modals -->
+        <Update
+        :isOpen="isEditModalOpen"
+        :file="selectedFile"
+        @close="isEditModalOpen = false"
+      />
+
+      <Preview
+        :isOpen="isPreviewModalOpen"
+        :file="selectedFile"
+        @close="isPreviewModalOpen = false"
+      />
+
+      <Delete
+        :isOpen="isDeleteModalOpen"
+        :file="selectedFile"
+        @close="isDeleteModalOpen = false"
+      />
+
+      <Upload
+        :isOpen="isUploadModalOpen"
+        @close="isUploadModalOpen = false"
+      />
       </div>
 
-      <!-- Modals -->
-      <Update
-      :isOpen="isEditModalOpen"
-      :file="selectedFile"
-      @close="isEditModalOpen = false"
-    />
-
-    <Preview
-      :isOpen="isPreviewModalOpen"
-      :file="selectedFile"
-      @close="isPreviewModalOpen = false"
-    />
-
-    <Delete
-      :isOpen="isDeleteModalOpen"
-      :file="selectedFile"
-      @close="isDeleteModalOpen = false"
-    />
-
-    <Upload
-      :isOpen="isUploadModalOpen"
-      @close="isUploadModalOpen = false"
-    />
-
-      <!-- Pagination -->
       <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
         <button
           class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
@@ -248,3 +248,4 @@ const goToPage = (page) => {
     </section>
   </div>
 </template>
+
