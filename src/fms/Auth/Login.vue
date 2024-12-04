@@ -26,7 +26,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-8">
     <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
       <h2 class="text-2xl font-bold text-center mb-6">PSTO-SDN FMS</h2>
       <form @submit.prevent="handleSubmit">
@@ -52,20 +52,20 @@ const handleSubmit = () => {
             required
           />
         </div>
-        <div class="flex items-center mt-6 space-x-4">
-                <button
-                    type="submit"
-                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-                >
-                    Login
-                </button>
-                <router-link
-                    to="/register"
-                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300"
-                >
-                    Register
-                </router-link>
-            </div>
+        <div class="flex flex-col sm:flex-row items-center mt-6 space-y-3 sm:space-y-0 sm:space-x-2">
+          <button
+              type="submit"
+              class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 w-2/3 flex justify-center items-center"
+          >
+              Login
+          </button>
+          <router-link
+              to="/register"
+              class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 text-center w-2/3 flex justify-center items-center"
+          >
+              Register
+          </router-link>
+        </div>
       </form>
     </div>
   </div>
