@@ -176,15 +176,17 @@ const goToUpload = () => {
               <td class="border p-3">{{ file.uploadedBy }}</td>
               <td class="border p-3">{{ file.date }}</td>
               <td class="border p-3">{{ file.category }}</td>
-              <td class="border p-3 text-center">
-                <div class="flex flex-wrap justify-center space-x-2 sm:space-x-2 space-y-2 sm:space-y-0">
-                  <Button @click="previewFile(file)" bg="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded sm:w-auto">
-                    <RiEyeLine />
-                  </Button>
-                  <Button @click="updateFile(file)" bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded sm:w-auto">
+              <td class="border p-3 ">
+                <div class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+                  <div class="items-center">
+                    <Button @click="previewFile(file)" bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center">
+                      <RiEyeLine />
+                    </Button>
+                  </div>
+                  <Button @click="updateFile(file)" bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center">
                     <RiEdit2Line />
                   </Button>
-                  <Button @click="deleteFile(file)" bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded sm:w-auto">
+                  <Button @click="deleteFile(file)" bg="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center">
                     <RiDeleteBin2Line />
                   </Button>
                 </div>
