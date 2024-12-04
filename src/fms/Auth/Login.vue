@@ -9,7 +9,7 @@ const router = useRouter();
 const handleSubmit = () => {
   try {
     // Simulated API call (replace this with your actual API request)
-    const isAuthenticated = email.value === 'admin@example.com' && password.value === 'password123';
+    const isAuthenticated = email.value === 'admin@example.com' && password.value === 'dost123';
 
     if (isAuthenticated) {
       // Redirect to the dashboard
@@ -26,9 +26,9 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-8">
-    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-      <h2 class="text-2xl font-bold text-center mb-6">PSTO-SDN FMS</h2>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4 sm:p-8 ">
+    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md border">
+      <h2 class="text-2xl font-bold text-center mb-2">PSTO-SDN FMS</h2>
       <form @submit.prevent="handleSubmit">
         <div class="mb-4">
           <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
