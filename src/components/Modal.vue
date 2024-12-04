@@ -15,9 +15,9 @@ const closeModal = () => emit('close');
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
+    class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 px-4"
   >
-    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
+    <div class="bg-white rounded-lg shadow-lg  w-full max-w-lg sm:w-1/2">
       <!-- Modal Header -->
       <div class="flex justify-between items-center border-b px-6 py-4">
         <h2 class="text-lg font-semibold text-gray-800">{{ title }}</h2>
