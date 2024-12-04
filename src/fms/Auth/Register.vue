@@ -58,17 +58,17 @@ alert("Registration submitted!");
               required
             />
           </div>
-            <div class="flex items-center mt-6">
+          <div class="flex flex-col sm:flex-row items-center mt-6 space-y-3 sm:space-y-0 sm:space-x-2">
                 <button
                     type="submit"
-                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300"
-                >
+                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 text-center w-2/3 flex justify-center items-center"
+                    >
                     Register
                 </button>
                 <router-link
                     to="/login"
-                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 hover:underline focus:outline-none focus:ring focus:ring-blue-300 ml-6"
-                >
+                    class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 w-2/3 flex justify-center items-center"
+                    >
                     Login
                 </router-link>
             </div>
