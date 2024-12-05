@@ -1,11 +1,7 @@
-  // tailwind.config.js
-  module.exports = {
-    content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-     theme: {
-       extend: {},
-     },
-     variants: {
-       extend: {},
-     },
-     plugins: [],
-   }
+export default {
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
