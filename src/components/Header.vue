@@ -72,8 +72,11 @@ onMounted(() => {
                 class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2  md:text-lg"
               >
               <p>Logout</p>
-               <!-- Hide the text on small screens -->
-                <RiLogoutBoxRLine/>
+              <!-- Hide the text on small screens -->
+              <!-- <span class="hidden sm:block">Logout</span> -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"></path>
+                </svg>
               </button>
             </div>
           </div>
