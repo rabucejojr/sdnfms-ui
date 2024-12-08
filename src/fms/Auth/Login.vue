@@ -1,28 +1,35 @@
 <script setup>
 import { ref } from "vue";
 import {useRouter} from 'vue-router';
+import axios from 'axios';
+
 
 const email = ref("");
 const password = ref("");
 const router = useRouter();
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
+  if (!email.value || !password.value) {
+    alert("Please fill in all fields!");
+}else{
+  // API registration
+  const payload = {
+        email: email.value,
+        password: password.value,
+    };
   try {
-    // Simulated API call (replace this with your actual API request)
-    const isAuthenticated = email.value === 'admin@example.com' && password.value === 'dost123';
-
-    if (isAuthenticated) {
-      // Redirect to the dashboard
-      router.push('/home');
-    } else {
-      alert('Invalid email or password.');
-    }
+    // API call for Login
+    const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
+    alert("Login successful: " + response.data.message);
+    router.push('/home');
   } catch (error) {
-    console.error('Login error:', error);
-    alert('An error occurred during login.');
+    if (error.response) {
+            // APi response for failed login
+            alert("Error: " + (error.response.data.message || "Login failed"));
+        }
   }
+}
 };
-
 </script>
 
 <template>

@@ -1,22 +1,41 @@
 <script setup>
 import { ref } from "vue";
+import axios from 'axios';
 
 // Reactive state
 const name = ref("");
 const email = ref("");
 const password = ref("");
+const conf_password = ref("");
 
 // Form submission handler
-const handleSubmit = () => {
+const handleSubmit = async () => {
 if (!name.value || !email.value || !password.value) {
     alert("Please fill in all fields!");
-    return;
+}else{
+  // API call for User Registration
+  const payload = {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        c_password: conf_password.value,
+    };
+
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/api/register', payload);
+        alert("Registration successful: " + response.data.message);
+    } catch (error) {
+        if (error.response) {
+            // API response for failed user registration
+            alert("Error: " + (error.response.data.message || "Registration failed"));
+        }
+    }
 }
 
-console.log("Name:", name.value);
-console.log("Email:", email.value);
-console.log("Password:", password.value);
-alert("Registration submitted!");
+// console.log("Name:", name.value);
+// console.log("Email:", email.value);
+// console.log("Password:", password.value);
+// alert("Registration submitted!");
 };
 </script>
 
@@ -50,10 +69,21 @@ alert("Registration submitted!");
           <div class="mb-4">
             <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
             <input
-              v-model="password"
+              v-model="password"  
               type="password"
               id="password"
               placeholder="Enter your password"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label for="conf_password" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
+            <input
+              v-model="conf_password"  
+              type="password"
+              id="password"
+              placeholder="Retype your password"
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
             />
