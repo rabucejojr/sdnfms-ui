@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@remixicon/vue": "^4.5.0",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
