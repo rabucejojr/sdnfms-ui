@@ -12,21 +12,25 @@ const handleSubmit = async () => {
   if (!email.value || !password.value) {
     alert("Please fill in all fields!");
 }else{
-  // API registration
-  const payload = {
-        email: email.value,
-        password: password.value,
-    };
-  try {
-    // API call for Login
-    const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
+  // // API registration
+  // const payload = {
+  //       email: email.value,
+  //       password: password.value,
+  //   };
+  // try {
+  //   // API call for Login
+  //   const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
+  //   alert("Login successful: " + response.data.message);
+  //   router.push('/home');
+  // } catch (error) {
+  //   if (error.response) {
+  //           // APi response for failed login
+  //           alert("Error: " + (error.response.data.message || "Login failed"));
+  //       }
+  // }
+  if (email.value === 'dostsdn@gmail.com' && password.value === 'dost123'){
     alert("Login successful: " + response.data.message);
     router.push('/home');
-  } catch (error) {
-    if (error.response) {
-            // APi response for failed login
-            alert("Error: " + (error.response.data.message || "Login failed"));
-        }
   }
 }
 };
