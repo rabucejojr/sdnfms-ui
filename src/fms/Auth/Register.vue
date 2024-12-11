@@ -82,7 +82,7 @@ if (!name.value || !email.value || !password.value) {
             <input
               v-model="conf_password"  
               type="password"
-              id="password"
+              id="conf_password"
               placeholder="Retype your password"
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
