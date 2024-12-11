@@ -4,7 +4,7 @@ import Update from './Update.vue';
 import Upload from './Upload.vue';
 import Delete from './Delete.vue';
 import Preview from './Preview.vue';
-import { RiEdit2Line, RiDeleteBin2Line, RiUpload2Line, RiEyeLine,RiSearchLine } from '@remixicon/vue';
+import { RiEdit2Line, RiDeleteBin2Line, RiUpload2Line, RiEyeLine, RiSearchLine } from '@remixicon/vue';
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import Header from '@/components/Header.vue';
@@ -16,7 +16,7 @@ defineProps({
   },
 });
 
-// Dummy stats data
+// Stats
 const stats = ref({
   totalFiles: 120,
   totalUsers: 15,
@@ -24,57 +24,48 @@ const stats = ref({
   storageUsed: 25.6,
 });
 
-// Dummy recent files data
+// Recent files
 const recentFiles = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
-
-// Search query
 const searchQuery = ref('');
 
-// Compute filtered files based on search query
+// Filtered files based on search query
 const filteredFiles = computed(() => {
-  const query = searchQuery.value.toLowerCase();
-  return recentFiles.value.filter(
-    (file) =>
-      file.name.toLowerCase().includes(query) ||
-      file.uploadedBy.toLowerCase().includes(query) ||
-      file.category.toLowerCase().includes(query)
-  );
+  return Array.isArray(recentFiles.value)
+    ? recentFiles.value.filter(file =>
+        file.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      )
+    : [];
 });
 
-// Calculate the total number of pages based on filtered files
+// Pagination
 const totalPages = computed(() => Math.ceil(filteredFiles.value.length / pageSize.value));
-
-// Get the files for the current page
 const paginatedFiles = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   return filteredFiles.value.slice(start, end);
 });
-
-// Change the current page
 const goToPage = (page) => {
-  if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
+  if (page > 0 && page <= totalPages.value) currentPage.value = page;
 };
 
-// Fetch data from the JSON file on component mount
+// Fetch files from the API
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('/files.json');
-    if (!response.ok) throw new Error('Failed to fetch recent files');
-    recentFiles.value = await response.json();
+    const response = await fetch('http://127.0.0.1:8000/api/files');
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const data = await response.json();
+
+    // Assuming API response structure is { files: [...] }
+    recentFiles.value = Array.isArray(data.files) ? data.files : [];
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching recent files:', error);
+    recentFiles.value = []; // Reset to empty on error
   }
 };
 
-// Fetch data when the component is mounted
-onMounted(fetchRecentFiles);
-
-// Modal state and methods remain unchanged
+// Modal state and methods
 const isPreviewModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
@@ -99,7 +90,11 @@ const deleteFile = (file) => {
 const goToUpload = () => {
   isUploadModalOpen.value = true;
 };
+
+// Fetch data when component is mounted
+onMounted(fetchRecentFiles);
 </script>
+
 
 
 <template>
