@@ -51,23 +51,15 @@ const onFileChange = (event) => {
 
 // File Upload using API
 const handleUpload = async () => {
-  if (!file.value || (Array.isArray(file.value) && file.value.length === 0)) {
+  if (!file.value) {
     alert('Please select at least one file before uploading.');
     return;
   }
-
   // Create FormData instance to send data
   const formData = new FormData();
 
-  // Append files to FormData
-  if (Array.isArray(file.value)) {
-    file.value.forEach((uploadedFile) => {
-      formData.append('files[]', uploadedFile); // 'files[]' for multiple files
-    });
-  } else {
-    formData.append('file', file.value); // For single file
-  }
-
+  // For single file upload
+  formData.append('file', file.value);
   // Append additional form data
   formData.append('uploader', uploader.value);
   formData.append('category', category.value);
@@ -126,7 +118,6 @@ const handleUpload = async () => {
               id="file"
               @change="onFileChange"
               class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
-              multiple
             />
           </div>
           <div>
