@@ -77,15 +77,15 @@ const handleUpload = async () => {
       },
     });
     // console.log(response.data);
-    // if (response.status === 201) {
-    //   // Handle successful upload
-      // alert('Files uploaded successfully!');
-    //   // Reset the form fields
-    //   file.value = null;
-    //   uploader.value = '';
-    //   category.value = '';
-    //   date.value = '';
-    // }
+    if (response.status === 201) {
+      // Handle successful upload
+      alert('Files uploaded successfully!');
+      // Reset the form fields
+      file.value = null;
+      uploader.value = '';
+      category.value = '';
+      date.value = '';
+    }
   } catch (error) {
     // Handle error
     alert('Failed to upload files.');
