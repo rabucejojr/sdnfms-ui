@@ -133,7 +133,7 @@ onMounted(fetchRecentFiles);
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search files..."
+            placeholder="Search files by filename ..."
             class="px-4 py-2 pl-10 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
           />
           <RiSearchLine
@@ -167,8 +167,8 @@ onMounted(fetchRecentFiles);
               :key="file.id"
               class="odd:bg-white even:bg-gray-50 text-sm sm:text-base"
             >
-              <td class="border p-3">{{ file.name }}</td>
-              <td class="border p-3">{{ file.uploadedBy }}</td>
+              <td class="border p-3">{{ file.filename }}</td>
+              <td class="border p-3">{{ file.uploader }}</td>
               <td class="border p-3">{{ file.date }}</td>
               <td class="border p-3">{{ file.category }}</td>
               <td class="border p-3 ">
