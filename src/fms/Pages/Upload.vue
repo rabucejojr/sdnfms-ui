@@ -26,7 +26,7 @@ const date = ref('');
 
 // Handle file selection
 const onFileChange = (event) => {
-  file.value = event.target.files || []; // Get the selected file
+  file.value = event.target.files[0]; // Get the selected file
 };
 
 // Handle upload logic
@@ -51,7 +51,7 @@ const onFileChange = (event) => {
 
 // File Upload using API
 const handleUpload = async () => {
-  if (!file.value) {
+  if (!file) {
     alert('Please select at least one file before uploading.');
     return;
   }
@@ -60,28 +60,32 @@ const handleUpload = async () => {
 
   // For single file upload
   formData.append('file', file.value);
-  // Append additional form data
   formData.append('uploader', uploader.value);
   formData.append('category', category.value);
   formData.append('date', date.value);
 
+  // // log inputs 
+  // for (const [key, value] of formData.entries()) {
+  //   console.log(`${key}: ${value}`);
+  // }
   try {
     // Make POST request to the API endpoint
-    const response = await axios.post('http://127.0.0.1/api/files', formData, {
+    const response = await axios.post('http://127.0.0.1:8000/api/files', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
       },
     });
-
-    if (response.status === 201) {
-      // Handle successful upload
-      alert('Files uploaded successfully!');
-      // Reset the form fields
-      file.value = null;
-      uploader.value = '';
-      category.value = '';
-      date.value = '';
-    }
+    // console.log(response.data);
+    // if (response.status === 201) {
+    //   // Handle successful upload
+      // alert('Files uploaded successfully!');
+    //   // Reset the form fields
+    //   file.value = null;
+    //   uploader.value = '';
+    //   category.value = '';
+    //   date.value = '';
+    // }
   } catch (error) {
     // Handle error
     alert('Failed to upload files.');
@@ -123,7 +127,8 @@ const handleUpload = async () => {
           <div>
             <input
             type="text"
-            id="owner"
+            v-model="uploader"
+            id="uploader"
             placeholder="Uploader"
             class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
             required
@@ -131,7 +136,8 @@ const handleUpload = async () => {
           </div>
           <div>
             <select
-              id="owner"
+              id="category"
+              v-model="category"
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
             >
@@ -143,7 +149,8 @@ const handleUpload = async () => {
           <div>
             <input
             type="date"
-            id="owner"
+            v-model="date"
+            id="date"
             placeholder=""
             class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
             required
