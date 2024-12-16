@@ -34,7 +34,7 @@ const searchQuery = ref('');
 const filteredFiles = computed(() => {
   return Array.isArray(recentFiles.value)
     ? recentFiles.value.filter(file =>
-        file.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        file.filename?.toLowerCase().includes(searchQuery.value.toLowerCase())
       )
     : [];
 });
@@ -55,10 +55,13 @@ const fetchRecentFiles = async () => {
   try {
     const response = await fetch('http://127.0.0.1:8000/api/files');
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
     const data = await response.json();
 
     // Assuming API response structure is { files: [...] }
     recentFiles.value = Array.isArray(data.files) ? data.files : [];
+    
+    console.log('Fetched data:', recentFiles.value);
   } catch (error) {
     console.error('Error fetching recent files:', error);
     recentFiles.value = []; // Reset to empty on error
@@ -123,12 +126,6 @@ onMounted(fetchRecentFiles);
     <!-- Recent Files Table -->
     <section class="recent-files bg-white p-4 sm:p-6 rounded shadow">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
-        <!-- <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search files..."
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        /> -->
         <div class="relative">
           <input
             v-model="searchQuery"
@@ -163,14 +160,14 @@ onMounted(fetchRecentFiles);
           </thead>
           <tbody>
             <tr
-              v-for="file in paginatedFiles"
-              :key="file.id"
+              v-for="data in paginatedFiles"
+              :key="data.id"
               class="odd:bg-white even:bg-gray-50 text-sm sm:text-base"
             >
-              <td class="border p-3">{{ file.filename }}</td>
-              <td class="border p-3">{{ file.uploader }}</td>
-              <td class="border p-3">{{ file.date }}</td>
-              <td class="border p-3">{{ file.category }}</td>
+              <td class="border p-3">{{ data.filename }}</td>
+              <td class="border p-3">{{ data.uploader }}</td>
+              <td class="border p-3">{{ data.date }}</td>
+              <td class="border p-3">{{ data.category.toUpperCase() }}</td>
               <td class="border p-3 ">
                 <div class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                   <div class="items-center">

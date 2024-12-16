@@ -29,32 +29,14 @@ const onFileChange = (event) => {
   file.value = event.target.files[0]; // Get the selected file
 };
 
-// Handle upload logic
-// const handleUpload = () => {
-//   if (file.value.length === 0) {
-//     alert('Please select at least one file before uploading.');
-//     return;
-//   }
-
-//   // Emit the file data to the parent component
-//   emit('upload', file.value);
-
-//   // Loop through the files and display an alert for each file uploaded
-//   file.value.forEach((uploadedFile) => {
-//     alert(`File "${uploadedFile.name}" uploaded successfully.`);
-//   });
-
-//   file.value = []; // Reset the file array after upload
-//   closeModal(); // Automatically close modal after upload
-// };
-
 
 // File Upload using API
 const handleUpload = async () => {
-  if (!file) {
-    alert('Please select at least one file before uploading.');
+  if (!file.value) {
+    alert('Please select a file before uploading.');
     return;
   }
+
   // Create FormData instance to send data
   const formData = new FormData();
 
@@ -76,7 +58,6 @@ const handleUpload = async () => {
         'Accept': 'application/json',
       },
     });
-    // console.log(response.data);
     if (response.status === 201) {
       // Handle successful upload
       alert('Files uploaded successfully!');
@@ -86,6 +67,7 @@ const handleUpload = async () => {
       category.value = '';
       date.value = '';
     }
+    window.location.reload();
   } catch (error) {
     // Handle error
     alert('Failed to upload files.');
@@ -120,6 +102,7 @@ const handleUpload = async () => {
             <input
               type="file"
               id="file"
+              ref="fileInput"
               @change="onFileChange"
               class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
             />
@@ -141,6 +124,7 @@ const handleUpload = async () => {
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
             >
+              <option value="" disabled>Category</option>
               <option value="setup">SETUP</option>
               <option value="gia">GIA</option>
               <option value="others">Others</option>
@@ -163,7 +147,6 @@ const handleUpload = async () => {
       <div class="">
         <div class="flex justify-end space-x-2 px-6 py-3">
           <Button
-            type="submit"
             @click="handleUpload"
             bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
           >
