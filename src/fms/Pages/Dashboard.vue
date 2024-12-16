@@ -80,8 +80,8 @@ const updateFile = (file) => {
   isEditModalOpen.value = true;
 };
 
-const previewFile = (file) => {
-  selectedFile.value = file;
+const previewFile = (data) => {
+  selectedFile.value = data;
   isPreviewModalOpen.value = true;
 };
 
@@ -195,7 +195,7 @@ onMounted(fetchRecentFiles);
 
       <Preview
         :isOpen="isPreviewModalOpen"
-        :file="selectedFile"
+        :data="selectedFile"
         @close="isPreviewModalOpen = false"
       />
 

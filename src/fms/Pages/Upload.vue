@@ -23,6 +23,7 @@ const file = ref(null);
 const uploader = ref('');
 const category = ref('');
 const date = ref('');
+const isUploadModalOpen = ref(false);
 
 // Handle file selection
 const onFileChange = (event) => {
@@ -45,11 +46,7 @@ const handleUpload = async () => {
   formData.append('uploader', uploader.value);
   formData.append('category', category.value);
   formData.append('date', date.value);
-
-  // // log inputs 
-  // for (const [key, value] of formData.entries()) {
-  //   console.log(`${key}: ${value}`);
-  // }
+  
   try {
     // Make POST request to the API endpoint
     const response = await axios.post('http://127.0.0.1:8000/api/files', formData, {
@@ -67,7 +64,6 @@ const handleUpload = async () => {
       category.value = '';
       date.value = '';
     }
-    window.location.reload();
   } catch (error) {
     // Handle error
     alert('Failed to upload files.');
@@ -161,5 +157,9 @@ const handleUpload = async () => {
         </div>
       </div>
     </div>
+    <Upload
+        :isOpen="isUploadModalOpen"
+        @close="isUploadModalOpen = true"
+      />
   </div>
 </template>

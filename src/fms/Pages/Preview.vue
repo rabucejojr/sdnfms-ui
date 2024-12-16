@@ -6,12 +6,13 @@ import { RiCloseFill } from '@remixicon/vue';
 // Props
 const props = defineProps({
   isOpen: { type: Boolean, required: true },
-  file: {
+  data: {
     type: Object,
     required: true,
     default: () => ({
-      name: '',
-      owner: '',
+      filename: '',
+      uploader: '',
+      category: '',
       date: '',
     }),
   },
@@ -36,36 +37,22 @@ const closeModal = () => emit('close');
                 <!-- Modal Body -->
                 <div class="space-y-4">
                     <div>
-                      <h4 class="text-gray-700 font-medium">File:</h4>
-                      <p type="file"class="text-gray-800">{{ file.name }}</p>
+                      <h4 class="text-gray-700 font-medium">Filename:</h4>
+                      <p type="file"class="text-gray-800">{{ data.filename }}</p>
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Owner:</h4>
-                      <p class="text-gray-800">{{ file.uploadedBy }}</p>
+                      <p class="text-gray-800">{{ data.uploader }}</p>
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Category:</h4>
-                      <p class="text-gray-800">{{ file.category }}</p>
+                      <p class="text-gray-800">{{ data.category }}</p>
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>
-                      <p class="text-gray-800">{{ file.date }}</p>
+                      <p class="text-gray-800">{{ data.date }}</p>
                     </div>
                 </div>
-            </template>
-            <template #footer>
-                <!-- Modal Footer -->
-                    <Button
-                    bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                    >
-                    Update
-                    </Button>
-                    <Button
-                    @click="closeModal"
-                    bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-                    >
-                    Close
-                    </Button>       
             </template>
         </Modal>
 
