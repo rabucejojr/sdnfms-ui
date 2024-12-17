@@ -38,7 +38,7 @@ const closeModal = () => emit('close');
                 <div class="space-y-4">
                     <div>
                       <h4 class="text-gray-700 font-medium">Filename:</h4>
-                      <p type="file"class="text-gray-800">{{ data.filename }}</p>
+                      <p type="file" class="text-gray-800">{{ data.filename }}</p>
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Owner:</h4>
@@ -46,7 +46,7 @@ const closeModal = () => emit('close');
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Category:</h4>
-                      <p class="text-gray-800">{{ data.category }}</p>
+                      <p class="text-gray-800">{{ data.category.toUpperCase() }}</p>
                     </div>
                     <div>
                       <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>

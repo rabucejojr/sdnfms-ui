@@ -1,24 +1,26 @@
 <script setup>
 import Modal from '@/components/Modal.vue';
-import { ref, watch } from 'vue';
 import Button from '@/components/Button.vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
-// Props to control modal visibility and pass initial data
+// Props to control modal visibility
 const props = defineProps({
-  isOpen: { type: Boolean, required: true },
+  isOpen: { 
+    type: Boolean, 
+    required: true 
+  },
 });
 
-// Emit events to notify parent component
+// Emit events
 const emit = defineEmits(['close', 'upload']);
 
-// Close modal
+// Close modal handler
 const closeModal = () => {
   emit('close');
 };
 
-// Reactive variable to handle file data
-// const file = ref([]);
+// Form data refs
 const file = ref(null);
 const uploader = ref('');
 const category = ref('');
@@ -27,51 +29,44 @@ const isUploadModalOpen = ref(false);
 
 // Handle file selection
 const onFileChange = (event) => {
-  file.value = event.target.files[0]; // Get the selected file
+  file.value = event.target.files[0];
 };
 
-
-// File Upload using API
+// File upload handler
 const handleUpload = async () => {
   if (!file.value) {
     alert('Please select a file before uploading.');
     return;
   }
 
-  // Create FormData instance to send data
   const formData = new FormData();
-
-  // For single file upload
   formData.append('file', file.value);
   formData.append('uploader', uploader.value);
   formData.append('category', category.value);
   formData.append('date', date.value);
   
   try {
-    // Make POST request to the API endpoint
     const response = await axios.post('http://127.0.0.1:8000/api/files', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
       },
     });
+
     if (response.status === 201) {
-      // Handle successful upload
       alert('Files uploaded successfully!');
-      // Reset the form fields
+      
+      // Reset form
       file.value = null;
       uploader.value = '';
       category.value = '';
       date.value = '';
     }
   } catch (error) {
-    // Handle error
     alert('Failed to upload files.');
     console.error(error);
   }
 };
-
-
 </script>
 
 <template>
@@ -83,36 +78,50 @@ const handleUpload = async () => {
       <!-- Header -->
       <div class="flex justify-between items-center border-b px-6 py-3">
         <h2 class="text-lg font-semibold text-gray-800">Upload</h2>
-        <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <button 
+          @click="closeModal" 
+          class="text-gray-400 hover:text-gray-600"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M6 18L18 6M6 6l12 12" 
+            />
           </svg>
         </button>
       </div>
 
       <!-- Body -->
       <div class="px-6 py-4">
-        <!-- File Input -->
-        <form @submit.prevent="handleUpload" class="space-y-4 ">
+        <form @submit.prevent="handleUpload" class="space-y-4">
           <div>
             <input
               type="file"
               id="file"
-              ref="fileInput"
               @change="onFileChange"
               class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
             />
           </div>
+
           <div>
             <input
-            type="text"
-            v-model="uploader"
-            id="uploader"
-            placeholder="Uploader"
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
+              type="text"
+              id="uploader"
+              v-model="uploader"
+              placeholder="Uploader"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
           </div>
+
           <div>
             <select
               id="category"
@@ -126,40 +135,39 @@ const handleUpload = async () => {
               <option value="others">Others</option>
             </select>
           </div>
+
           <div>
             <input
-            type="date"
-            v-model="date"
-            id="date"
-            placeholder=""
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-            required
-          />
+              type="date"
+              id="date"
+              v-model="date"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
           </div>
         </form>
       </div>
 
       <!-- Footer -->
-      <div class="">
-        <div class="flex justify-end space-x-2 px-6 py-3">
-          <Button
-            @click="handleUpload"
-            bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-          >
-            Upload
-          </Button>
-          <Button
-            @click="closeModal"
-            bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-          >
-            Close
-          </Button>
-        </div>
+      <div class="flex justify-end space-x-2 px-6 py-3">
+        <Button
+          @click="handleUpload"
+          bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+        >
+          Upload
+        </Button>
+        <Button
+          @click="closeModal"
+          bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
+        >
+          Close
+        </Button>
       </div>
     </div>
+
     <Upload
-        :isOpen="isUploadModalOpen"
-        @close="isUploadModalOpen = true"
-      />
+      :isOpen="isUploadModalOpen"
+      @close="isUploadModalOpen = true"
+    />
   </div>
 </template>
