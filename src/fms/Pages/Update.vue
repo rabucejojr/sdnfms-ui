@@ -3,6 +3,7 @@ import Button from '@/components/Button.vue';
 import Modal from '@/components/Modal.vue';
 import { RiCloseFill } from '@remixicon/vue';
 import { ref, watch } from 'vue';
+import axios from 'axios';
 
 // Props
 const props = defineProps({
@@ -20,10 +21,14 @@ const props = defineProps({
       date: '',
     }),
   },
+  fetchRecentFiles: {
+    type: Function,
+    required: true,
+  },
 });
 
 // Emit event to close the modal
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'update-complete']);
 const closeModal = () => emit('close');
 
 // Reactive form data initialized with the prop
@@ -34,6 +39,8 @@ const file = ref(null);
 const uploader = ref(formData.value.uploader);
 const category = ref(formData.value.category);
 const date = ref(formData.value.date);
+const showSuccessModal = ref(false);
+const showErrorModal = ref(false);
 
 // Watch for changes in props.data and update formData
 watch(
@@ -51,40 +58,59 @@ const onFileChange = (event) => {
 
 // File Update using API
 const handleUpdate = async () => {
-  if (!file.value) {
-    alert('Please select a file before uploading.');
-    return;
+  const formData = new FormData();
+
+  // Only append file if one was selected
+  if (file.value) {
+    formData.append('file', file.value);
   }
 
-  // For single file upload
-  formData.append('file', file.value);
-  formData.append('uploader', uploader.value);
-  formData.append('category', category.value);
-  formData.append('date', date.value);
+  formData.append('uploader', uploader);
+  formData.append('category', category);
+  formData.append('date', date);
   formData.append('_method', 'PUT');
   
   try {
     // Make POST request to the API endpoint
-    const response = await axios.post('http://127.0.0.1:8000/api/files', formData, {
+    const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
       },
     });
 
-    // Handle successful upload
-    alert('Files uploaded successfully!');
-    
-    // Reset the form fields
-    file.value = null;
-    uploader.value = '';
-    category.value = '';
-    date.value = '';
+    if (response.status === 200) {
+      // Reset form and show success message
+      file.value = null;
+      formData.value = {
+        filename: '',
+        uploader: '',
+        category: '',
+        date: '',
+      };
+
+      // Close main modal and show success message
+      closeModal();
+      setTimeout(() => {
+      props.fetchRecentFiles();
+      }, 500);
+      showSuccessModal.value = true;
+      emit('update-complete', true);
+
+      // Auto hide success message after delay
+      setTimeout(() => {
+        showSuccessModal.value = false;
+      }, 1500);
+    }
 
   } catch (error) {
-    // Handle error
-    alert('Failed to update files.');
+    // Show error message
+    showErrorModal.value = true;
+    setTimeout(() => {
+      showErrorModal.value = false;
+    }, 1500);
     console.error(error);
+    emit('update-complete', false);
   }
 };
 </script>
@@ -124,7 +150,6 @@ const handleUpdate = async () => {
                 v-model="formData.uploader"
                 placeholder="Uploader"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
               />
             </div>
 
@@ -133,7 +158,6 @@ const handleUpdate = async () => {
                 id="category"
                 v-model="formData.category"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
               >
                 <option value="" disabled>Category</option>
                 <option value="setup">SETUP</option>
@@ -149,7 +173,6 @@ const handleUpdate = async () => {
                 v-model="formData.date"
                 placeholder=""
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                required
               />
             </div>
           </form>
@@ -157,7 +180,10 @@ const handleUpdate = async () => {
 
         <template #footer>
           <!-- Modal Footer -->
-          <Button bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+          <Button 
+            @click="handleUpdate"
+            bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+          >
             Update
           </Button>
           <Button
@@ -169,5 +195,23 @@ const handleUpdate = async () => {
         </template>
       </Modal>
     </div>
+
+    <!-- Success Modal -->
+    <Modal v-if="showSuccessModal" :isOpen="showSuccessModal" title="Success">
+      <template #body>
+        <div class="text-center">
+          <p class="text-green-600 font-medium">File updated successfully!</p>
+        </div>
+      </template>
+    </Modal>
+
+    <!-- Error Modal -->
+    <Modal v-if="showErrorModal" :isOpen="showErrorModal" title="Error">
+      <template #body>
+        <div class="text-center">
+          <p class="text-red-600 font-medium">Failed to update file!</p>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>

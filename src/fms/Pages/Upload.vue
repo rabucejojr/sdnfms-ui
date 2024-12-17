@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean, 
     required: true 
   },
+  fetchRecentFiles: {
+    type: Function,
+    required: true,
+  },
 });
 
 // Define emitted events for parent component communication
@@ -42,6 +46,26 @@ const handleUpload = async () => {
     return;
   }
 
+  // Check if file already exists
+  try {
+    const checkResponse = await axios.get('http://127.0.0.1:8000/api/files');
+    const existingFiles = checkResponse.data.files;
+    
+    const fileExists = existingFiles.some(existingFile => 
+      existingFile.filename === file.value.name
+    );
+
+    if (fileExists) {
+      showErrorModal.value = true;
+      setTimeout(() => {
+        showErrorModal.value = false;
+      }, 1500);
+      return;
+    }
+  } catch (error) {
+    console.error('Error checking existing files:', error);
+  }
+
   // Prepare form data for API request
   const formData = new FormData();
   formData.append('file', file.value);
@@ -65,13 +89,13 @@ const handleUpload = async () => {
       category.value = '';
       date.value = '';
 
-      // Handle successful upload UI updates
       closeModal();
       showSuccessModal.value = true;
 
       // Notify parent of success and auto-hide success modal
       emit('upload-complete', true);
       setTimeout(() => {
+        props.fetchRecentFiles();
         showSuccessModal.value = false;
       }, 1500);
     }
