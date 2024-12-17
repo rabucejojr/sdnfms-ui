@@ -1,4 +1,5 @@
 <script setup>
+// Import necessary Vue and component dependencies
 import { ref, onMounted, computed } from 'vue';
 import Update from './Update.vue';
 import Upload from './Upload.vue';
@@ -14,7 +15,9 @@ import {
 import Card from '@/components/Card.vue';
 import Button from '@/components/Button.vue';
 import Header from '@/components/Header.vue';
+import axios from 'axios';
 
+// Define component props
 defineProps({
   padding: {
     type: String,
@@ -22,7 +25,7 @@ defineProps({
   },
 });
 
-// Stats data
+// Mock statistics data for dashboard overview
 const stats = ref({
   totalFiles: 120,
   totalUsers: 15,
@@ -30,39 +33,48 @@ const stats = ref({
   storageUsed: 25.6,
 });
 
-// Files pagination state
+// State management for file pagination and search
 const recentFiles = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const searchQuery = ref('');
 
-// Computed properties for file filtering and pagination
+// Computed properties for filtering and paginating files
 const filteredFiles = computed(() => {
-  return Array.isArray(recentFiles.value)
-    ? recentFiles.value.filter(file =>
-        file.filename?.toLowerCase().includes(searchQuery.value.toLowerCase())
-      )
-    : [];
+  if (!Array.isArray(recentFiles.value)) return [];
+  
+  // Filter files based on search query across multiple fields
+  const query = searchQuery.value.toLowerCase();
+  return recentFiles.value.filter(file => {
+    return (
+      file.filename?.toLowerCase().includes(query) ||
+      file.uploader?.toLowerCase().includes(query) ||
+      file.category?.toLowerCase().includes(query) ||
+      file.date?.toLowerCase().includes(query)
+    );
+  });
 });
 
+// Calculate total number of pages based on filtered results
 const totalPages = computed(() => 
   Math.ceil(filteredFiles.value.length / pageSize.value)
 );
 
+// Get current page of files based on pagination settings
 const paginatedFiles = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   return filteredFiles.value.slice(start, end);
 });
 
-// Navigation methods
+// Navigation methods for pagination
 const goToPage = (page) => {
   if (page > 0 && page <= totalPages.value) {
     currentPage.value = page;
   }
 };
 
-// API methods
+// API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
     const response = await fetch('http://127.0.0.1:8000/api/files');
@@ -80,14 +92,14 @@ const fetchRecentFiles = async () => {
   }
 };
 
-// Modal state
+// State management for modal dialogs
 const isPreviewModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const isUploadModalOpen = ref(false);
 const selectedFile = ref({});
 
-// Modal action handlers
+// Modal action handlers for file operations
 const updateFile = (data) => {
   selectedFile.value = data;
   isEditModalOpen.value = true;
@@ -103,18 +115,56 @@ const deleteFile = (data) => {
   isDeleteModalOpen.value = true;
 };
 
+// Handle completion of delete operation
+const handleDeleteComplete = async (success) => {
+  if (success) {
+    try {
+      const response = await axios.delete(`http://127.0.0.1:8000/api/files/${selectedFile.value.id}`);
+      
+      if (response.status === 200) {
+        // Remove deleted file from local state
+        recentFiles.value = recentFiles.value.filter(file => file.id !== selectedFile.value.id);
+
+        // Close modal dialog
+        isDeleteModalOpen.value = false;
+        
+        // Refresh file list from server
+        setTimeout(() => {
+        props.fetchRecentFiles();
+      }, 500);
+      }
+    } catch (error) {
+      console.error('Error deleting file:', error);
+    }
+  }
+};
+
+// Handle completion of upload operation
+const handleUploadComplete = async (success) => {
+  if (success) {
+    // Close upload modal
+    isUploadModalOpen.value = false;
+    
+    // Refresh file list from server  
+    setTimeout(() => {
+        props.fetchRecentFiles();
+      }, 500);
+  }
+};
+
+// Open upload modal
 const goToUpload = () => {
   isUploadModalOpen.value = true;
 };
 
-// Initialize component
+// Fetch initial data when component mounts
 onMounted(fetchRecentFiles);
 </script>
 
 <template>
   <Header />
   <div class="p-4 sm:p-6 bg-gray-100 min-h-screen">
-    <!-- Stats Overview -->
+    <!-- Stats Overview Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       <Card>
         <h2 class="text-sm sm:text-lg font-medium">Total Files</h2>
@@ -137,10 +187,11 @@ onMounted(fetchRecentFiles);
       </Card>
     </div>
 
-    <!-- Recent Files Table -->
+    <!-- Recent Files Section -->
     <section class="recent-files bg-white p-4 sm:p-6 rounded shadow">
+      <!-- Search and Upload Controls -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
-        <!-- Search Input -->
+        <!-- Search Input with Icon -->
         <div class="relative">
           <input
             v-model="searchQuery"
@@ -164,7 +215,7 @@ onMounted(fetchRecentFiles);
         </Button>
       </div>
 
-      <!-- Table Container -->
+      <!-- Files Table -->
       <div class="overflow-x-auto">
         <table class="w-full border-collapse">
           <thead>
@@ -177,6 +228,7 @@ onMounted(fetchRecentFiles);
             </tr>
           </thead>
           
+          <!-- Table Body with File Rows -->
           <tbody>
             <tr
               v-for="data in paginatedFiles"
@@ -188,6 +240,7 @@ onMounted(fetchRecentFiles);
               <td class="border p-3">{{ data.date }}</td>
               <td class="border p-3">{{ data.category.toUpperCase() }}</td>
               <td class="border p-3">
+                <!-- Action Buttons -->
                 <div class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                   <div class="items-center">
                     <Button 
@@ -217,11 +270,12 @@ onMounted(fetchRecentFiles);
           </tbody>
         </table>
 
-        <!-- Modals -->
+        <!-- Modal Components -->
         <Update
           :isOpen="isEditModalOpen"
           :data="selectedFile"
           @close="isEditModalOpen = false"
+          :fetchRecentFiles="fetchRecentFiles"
         />
 
         <Preview
@@ -234,15 +288,19 @@ onMounted(fetchRecentFiles);
           :isOpen="isDeleteModalOpen"
           :file="selectedFile"
           @close="isDeleteModalOpen = false"
+          @delete-complete="handleDeleteComplete"
+          :fetchRecentFiles="fetchRecentFiles"
         />
 
         <Upload
           :isOpen="isUploadModalOpen"
           @close="isUploadModalOpen = false"
+          @upload-complete="handleUploadComplete"
+          :fetchRecentFiles="fetchRecentFiles"
         />
       </div>
 
-      <!-- Pagination -->
+      <!-- Pagination Controls -->
       <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
         <button
           class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
