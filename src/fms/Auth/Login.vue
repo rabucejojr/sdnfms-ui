@@ -29,7 +29,7 @@ const handleSubmit = async () => {
   //       }
   // }
   if (email.value === 'dostsdn@gmail.com' && password.value === 'dost123'){
-    alert("Login successful: ");
+    // alert("Login successful: ");
     router.push('/home');
   }
 }
