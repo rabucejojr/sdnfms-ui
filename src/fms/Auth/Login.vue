@@ -14,8 +14,8 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 
-const handleSubmit = async (payload) => {
-  if (!payload.username || !payload.password) {
+const handleSubmit = async () => {
+  if (!email.value || !password.value) {
     modalTitle.value = 'User Unregistered';
     modalMessage.value = 'Please register to login';
     isModalOpen.value = true;
@@ -28,7 +28,7 @@ const handleSubmit = async (payload) => {
     };
   try {
     // API call for Login
-    const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
+    const response = await axios.post('http://192.168.1.13:8000/api/login', payload);
     // alert("Login successful: " + response.data.message);
     modalTitle.value = 'Login Successful';
     modalMessage.value = `Login successful: ${response.data.message}`;

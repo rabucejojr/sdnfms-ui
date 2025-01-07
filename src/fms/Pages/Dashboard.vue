@@ -77,7 +77,7 @@ const goToPage = (page) => {
 // API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/files');
+    const response = await fetch('http://192.168.1.13:8000/api/files');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -85,7 +85,6 @@ const fetchRecentFiles = async () => {
     const data = await response.json();
     recentFiles.value = data.files ? data.files : [];
     
-    console.log('Fetched data:', recentFiles.value);
   } catch (error) {
     console.error('Error fetching recent files:', error);
     recentFiles.value = []; 
