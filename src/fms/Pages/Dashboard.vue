@@ -77,7 +77,7 @@ const goToPage = (page) => {
 // API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('`{process.env.API_URL}/files`');
+    const response = await fetch('http://127.0.0.1:8000/api/files');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
