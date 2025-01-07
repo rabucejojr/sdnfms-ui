@@ -1,6 +1,11 @@
 <script setup>
 import { ref } from "vue";
 import axios from 'axios';
+import Modal from "@/components/Modal.vue";
+import { useRouter } from "vue-router";
+
+
+const router = useRouter();
 
 // Reactive state
 const name = ref("");
@@ -8,10 +13,17 @@ const email = ref("");
 const password = ref("");
 const conf_password = ref("");
 
+// Modal states
+const isModalOpen = ref(false);
+const modalTitle = ref('');
+const modalMessage = ref('');
+
 // Form submission handler
 const handleSubmit = async () => {
 if (!name.value || !email.value || !password.value) {
-    alert("Please fill in all fields!");
+    modalTitle.value = 'Incomplete Registration';
+    modalMessage.value = 'Please fill in all fields';
+    isModalOpen.value = true;
 }else{
   // API call for User Registration
   const payload = {
@@ -23,19 +35,19 @@ if (!name.value || !email.value || !password.value) {
 
     try {
         const response = await axios.post('http://127.0.0.1:8000/api/register', payload);
-        alert("Registration successful: " + response.data.message);
+        modalTitle.value = 'Successful Registration';
+        modalMessage.value = 'User registered successfully';
+        isModalOpen.value = true;
+        router.push('/login');
     } catch (error) {
         if (error.response) {
             // API response for failed user registration
-            alert("Error: " + (error.response.data.message || "Registration failed"));
+            modalTitle.value = 'Registration Failed';
+            modalMessage.value = 'An error occurred while registering the user';
+            isModalOpen.value = true;
         }
     }
 }
-
-// console.log("Name:", name.value);
-// console.log("Email:", email.value);
-// console.log("Password:", password.value);
-// alert("Registration submitted!");
 };
 </script>
 
@@ -103,6 +115,16 @@ if (!name.value || !email.value || !password.value) {
                 </router-link>
             </div>
         </form>
+
+        <!-- Modal -->
+        <Modal :isOpen="isModalOpen" :title="modalTitle" @close="isModalOpen = false">
+          <template #body>
+            <p>{{ modalMessage }}</p>
+          </template>
+          <template #footer>
+            <button @click="isModalOpen = false" class="bg-blue-500 text-white px-4 py-2 rounded">Close</button>
+          </template>
+        </Modal>
       </div>
     </div>
 </template>

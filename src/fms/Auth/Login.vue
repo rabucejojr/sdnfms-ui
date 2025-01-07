@@ -2,36 +2,50 @@
 import { ref } from "vue";
 import {useRouter} from 'vue-router';
 import axios from 'axios';
+import Modal from "@/components/Modal.vue";
 
+
+// Modal state
+const isModalOpen = ref(false);
+const modalTitle = ref('');
+const modalMessage = ref('');
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
-const router = useRouter();
 
-const handleSubmit = async () => {
-  if (!email.value || !password.value) {
-    alert("Please fill in all fields!");
-}else{
-  // // API registration
-  // const payload = {
-  //       email: email.value,
-  //       password: password.value,
-  //   };
-  // try {
-  //   // API call for Login
-  //   const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
-  //   alert("Login successful: " + response.data.message);
-  //   router.push('/home');
-  // } catch (error) {
-  //   if (error.response) {
-  //           // APi response for failed login
-  //           alert("Error: " + (error.response.data.message || "Login failed"));
-  //       }
-  // }
-  if (email.value === 'dostsdn@gmail.com' && password.value === 'dost123'){
-    // alert("Login successful: ");
+const handleSubmit = async (payload) => {
+  if (!payload.username || !payload.password) {
+    modalTitle.value = 'User Unregistered';
+    modalMessage.value = 'Please register to login';
+    isModalOpen.value = true;
+    return;
+  }else{
+  // API registration
+  const payload = {
+        email: email.value,
+        password: password.value,
+    };
+  try {
+    // API call for Login
+    const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
+    // alert("Login successful: " + response.data.message);
+    modalTitle.value = 'Login Successful';
+    modalMessage.value = `Login successful: ${response.data.message}`;
+    isModalOpen.value = true;
     router.push('/home');
+  } catch (error) {
+    if (error.response) {
+          // APi response for failed login
+          modalTitle.value = 'Login Failed';
+          modalMessage.value = `Error: ${error.response.data.message || 'Login failed'}`;
+          isModalOpen.value = true;
+        }
   }
+  // if (email.value === 'dostsdn@gmail.com' && password.value === 'dost123'){
+  //   // alert("Login successful: ");
+  //   router.push('/home');
+  // }
 }
 };
 </script>
@@ -78,6 +92,16 @@ const handleSubmit = async () => {
           </router-link>
         </div>
       </form>
+
+      <!-- Modal -->
+        <Modal :isOpen="isModalOpen" :title="modalTitle" @close="isModalOpen = false">
+          <template #body>
+            <p>{{ modalMessage }}</p>
+          </template>
+          <template #footer>
+            <button @click="isModalOpen = false" class="bg-blue-500 text-white px-4 py-2 rounded">Close</button>
+          </template>
+        </Modal>
     </div>
   </div>
 </template>
