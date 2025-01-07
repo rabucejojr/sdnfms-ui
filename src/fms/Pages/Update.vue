@@ -72,7 +72,7 @@ const handleUpdate = async () => {
   
   try {
     // Make POST request to the API endpoint
-    const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData, {
+    const response = await axios.post(`{process.env.API_URL}/files/${props.data.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',

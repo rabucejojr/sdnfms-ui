@@ -34,7 +34,7 @@ if (!name.value || !email.value || !password.value) {
     };
 
     try {
-        const response = await axios.post('http://127.0.0.1:8000/api/register', payload);
+        const response = await axios.post(`{process.env.API_URL}/register`, payload);
         modalTitle.value = 'Successful Registration';
         modalMessage.value = 'User registered successfully';
         isModalOpen.value = true;
