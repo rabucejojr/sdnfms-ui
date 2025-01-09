@@ -28,7 +28,7 @@ const props = defineProps({
 });
 
 // Emit event to close the modal
-const emit = defineEmits(['close', 'update-complete']);
+const emit = defineEmits(['close', 'complete']);
 const closeModal = () => emit('close');
 
 // Reactive form data initialized with the prop
@@ -53,7 +53,8 @@ watch(
 
 // Handle file selection
 const onFileChange = (event) => {
-  file.value = event.target.files[0]; // Get the selected file
+  const selectedFile = event.target.files[0]; // Get the selected file
+  file.value = selectedFile ? selectedFile : null; // Assign file or null
 };
 
 // File Update using API
@@ -72,7 +73,7 @@ const handleUpdate = async () => {
   
   try {
     // Make POST request to the API endpoint
-    const response = await axios.post(`http://192.168.1.13:8000/api/files/${props.data.id}`, formData, {
+    const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
@@ -95,7 +96,7 @@ const handleUpdate = async () => {
       props.fetchRecentFiles();
       }, 500);
       showSuccessModal.value = true;
-      emit('update-complete', true);
+      emit('complete', true);
 
       // Auto hide success message after delay
       setTimeout(() => {
@@ -106,11 +107,12 @@ const handleUpdate = async () => {
   } catch (error) {
     // Show error message
     showErrorModal.value = true;
+    console.log(error);
     setTimeout(() => {
       showErrorModal.value = false;
     }, 1500);
     console.error(error);
-    emit('update-complete', false);
+    emit('complete', false);
   }
 };
 </script>

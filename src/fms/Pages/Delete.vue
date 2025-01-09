@@ -49,7 +49,7 @@ const fetchFiles = async () => {
 const handleDelete = async () => {
   try {
     // Make DELETE request to API
-    const response = await axios.delete(`http://192.168.1.13:8000/api/files/${props.file.id}`);
+    const response = await axios.delete(`http://127.0.0.1:8000/api/files/${props.file.id}`);
     
     if (response.status === 200) {
       // Fetch updated file list

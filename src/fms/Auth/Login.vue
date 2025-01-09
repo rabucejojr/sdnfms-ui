@@ -28,7 +28,7 @@ const handleSubmit = async () => {
     };
   try {
     // API call for Login
-    const response = await axios.post('http://192.168.1.13:8000/api/login', payload);
+    const response = await axios.post('http://127.0.0.1:8000/api/login', payload);
     // alert("Login successful: " + response.data.message);
     modalTitle.value = 'Login Successful';
     modalMessage.value = `Login successful: ${response.data.message}`;

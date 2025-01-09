@@ -77,7 +77,7 @@ const goToPage = (page) => {
 // API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('http://192.168.1.13:8000/api/files');
+    const response = await fetch('http://127.0.0.1:8000/api/files');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -118,7 +118,7 @@ const deleteFile = (data) => {
 const handleDeleteComplete = async (success) => {
   if (success) {
     try {
-      const response = await axios.delete(`http://192.168.1.13:8000/files/${selectedFile.value.id}`);
+      const response = await axios.delete(`http://127.0.0.1:8000/files/${selectedFile.value.id}`);
       
       if (response.status === 200) {
         // Remove deleted file from local state
@@ -146,7 +146,7 @@ const handleUploadComplete = async (success) => {
     
     // Refresh file list from server  
     setTimeout(() => {
-        props.fetchRecentFiles();
+        fetchRecentFiles();
       }, 500);
   }
 };
