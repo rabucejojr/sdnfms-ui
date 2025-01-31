@@ -13,7 +13,6 @@ const props = defineProps({
   },
   data: {
     type: Object,
-    required: true,
     default: () => ({
       filename: '',
       uploader: '',
@@ -59,62 +58,37 @@ const onFileChange = (event) => {
 
 // File Update using API
 const handleUpdate = async () => {
-  const formData = new FormData();
-
-  // Only append file if one was selected
-  if (file.value) {
-    formData.append('file', file.value);
-  }
-
-  formData.append('uploader', uploader);
-  formData.append('category', category);
-  formData.append('date', date);
-  formData.append('_method', 'PUT');
-  
-  try {
-    // Make POST request to the API endpoint
-    const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json',
-      },
-    });
-
-    if (response.status === 200) {
-      // Reset form and show success message
-      file.value = null;
-      formData.value = {
-        filename: '',
-        uploader: '',
-        category: '',
-        date: '',
-      };
-
-      // Close main modal and show success message
-      closeModal();
-      setTimeout(() => {
-      props.fetchRecentFiles();
-      }, 500);
-      showSuccessModal.value = true;
-      emit('complete', true);
-
-      // Auto hide success message after delay
-      setTimeout(() => {
-        showSuccessModal.value = false;
-      }, 1500);
+    if (!props.data.id) {
+        showErrorModal("Invalid file ID. Please try again.");
+        return;
     }
 
-  } catch (error) {
-    // Show error message
-    showErrorModal.value = true;
-    console.log(error);
-    setTimeout(() => {
-      showErrorModal.value = false;
-    }, 1500);
-    console.error(error);
-    emit('complete', false);
-  }
+    try {
+        const formData = new FormData();
+        formData.append('_method', 'PUT'); // Laravel requires this for updating via POST
+
+        if (file.value) {
+            formData.append('file', file.value);
+        }
+        formData.append('uploader', uploader.value || "");
+        formData.append('category', category.value || "");
+        formData.append('date', date.value || "");
+
+        const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData);
+        showSuccessModal(response.data.message);
+        props.fetchRecentFiles();
+
+        // Reset form values
+        file.value = null;
+        uploader.value = "";
+        category.value = "";
+        date.value = "";
+        document.getElementById("fileInput").value = "";
+    } catch (error) {
+        showErrorModal('Failed to update file. Please try again.');
+    }
 };
+
 </script>
 
 <template>
