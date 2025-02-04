@@ -96,11 +96,12 @@ const handleUpdate = async () => {
     document.getElementById("file").value = ""; // Reset file input
   } catch (error) {
     showErrorModal.value = true;
-
     // Close success modal automatically after 3 seconds
     setTimeout(() => {
       closeModal(); // Close the update modal
     }, 1000);
+    showErrorModal.value = false;
+    props.fetchRecentFiles();
   }
 };
 </script>
