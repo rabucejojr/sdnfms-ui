@@ -1,23 +1,23 @@
 <script setup>
-import Button from '@/components/Button.vue';
-import Modal from '@/components/Modal.vue';
-import { RiCloseFill } from '@remixicon/vue';
-import { ref, watch } from 'vue';
-import axios from 'axios';
+import Button from "@/components/Button.vue";
+import Modal from "@/components/Modal.vue";
+import { RiCloseFill } from "@remixicon/vue";
+import { ref, watch } from "vue";
+import axios from "axios";
 
 // Props
 const props = defineProps({
-  isOpen: { 
-    type: Boolean, 
-    required: true 
+  isOpen: {
+    type: Boolean,
+    required: true,
   },
   data: {
     type: Object,
     default: () => ({
-      filename: '',
-      uploader: '',
-      category: '',
-      date: '',
+      filename: "",
+      uploader: "",
+      category: "",
+      date: "",
     }),
   },
   fetchRecentFiles: {
@@ -27,8 +27,8 @@ const props = defineProps({
 });
 
 // Emit event to close the modal
-const emit = defineEmits(['close', 'complete']);
-const closeModal = () => emit('close');
+const emit = defineEmits(["close", "complete"]);
+const closeModal = () => emit("close");
 
 // Reactive form data initialized with the prop
 const formData = ref({ ...props.data });
@@ -43,10 +43,10 @@ const showErrorModal = ref(false);
 
 // Watch for changes in props.data and update formData
 watch(
-  () => props.data, 
+  () => props.data,
   (newData) => {
     formData.value = { ...newData };
-  }, 
+  },
   { deep: true }
 );
 
@@ -58,51 +58,62 @@ const onFileChange = (event) => {
 
 // File Update using API
 const handleUpdate = async () => {
-    if (!props.data.id) {
-        showErrorModal("Invalid file ID. Please try again.");
-        return;
+  if (!props.data.id) {
+    showErrorModal.value = true;
+    return;
+  }
+
+  try {
+    const payload = new FormData();
+    payload.append("_method", "PUT"); // Laravel requires this for updating via POST
+    if (file.value) {
+      payload.append("file", file.value);
     }
+    payload.append("uploader", uploader.value);
+    payload.append("category", category.value);
+    payload.append("date", date.value);
 
-    try {
-        const formData = new FormData();
-        formData.append('_method', 'PUT'); // Laravel requires this for updating via POST
+    const response = await axios.post(
+      `http://127.0.0.1:8000/api/files/${props.data.id}`,
+      payload
+    );
 
-        if (file.value) {
-            formData.append('file', file.value);
-        }
-        formData.append('uploader', uploader.value || "");
-        formData.append('category', category.value || "");
-        formData.append('date', date.value || "");
+    showSuccessModal.value = true;
 
-        const response = await axios.post(`http://127.0.0.1:8000/api/files/${props.data.id}`, formData);
-        showSuccessModal(response.data.message);
-        props.fetchRecentFiles();
+    // Close success modal automatically after 3 seconds
+    setTimeout(() => {
+      showSuccessModal.value = false;
+      closeModal(); // Close the update modal
+    }, 1000);
 
-        // Reset form values
-        file.value = null;
-        uploader.value = "";
-        category.value = "";
-        date.value = "";
-        document.getElementById("fileInput").value = "";
-    } catch (error) {
-        showErrorModal('Failed to update file. Please try again.');
-    }
+    props.fetchRecentFiles();
+
+    // Reset form fields
+    file.value = null;
+    uploader.value = "";
+    category.value = "";
+    date.value = "";
+    document.getElementById("file").value = ""; // Reset file input
+  } catch (error) {
+    showErrorModal.value = true;
+
+    // Close success modal automatically after 3 seconds
+    setTimeout(() => {
+      closeModal(); // Close the update modal
+    }, 1000);
+  }
 };
-
 </script>
 
 <template>
-  <div 
-    v-if="isOpen" 
+  <div
+    v-if="isOpen"
     class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
   >
     <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
       <Modal :isOpen="isOpen" title="File Update" @close="closeModal">
         <template #header>
-          <button 
-            @click="closeModal" 
-            class="text-gray-400 hover:text-gray-600"
-          >
+          <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
             <RiCloseFill />
           </button>
         </template>
@@ -123,7 +134,7 @@ const handleUpdate = async () => {
               <input
                 type="text"
                 id="uploader"
-                v-model="formData.uploader"
+                v-model="uploader"
                 placeholder="Uploader"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               />
@@ -132,7 +143,7 @@ const handleUpdate = async () => {
             <div>
               <select
                 id="category"
-                v-model="formData.category"
+                v-model="category"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               >
                 <option value="" disabled>Category</option>
@@ -146,7 +157,7 @@ const handleUpdate = async () => {
               <input
                 type="date"
                 id="date"
-                v-model="formData.date"
+                v-model="date"
                 placeholder=""
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               />
@@ -156,7 +167,7 @@ const handleUpdate = async () => {
 
         <template #footer>
           <!-- Modal Footer -->
-          <Button 
+          <Button
             @click="handleUpdate"
             bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
           >
