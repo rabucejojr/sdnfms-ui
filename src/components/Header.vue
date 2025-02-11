@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { RiLogoutBoxRLine } from "@remixicon/vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
 
 const currentDateTime = ref("");
 
@@ -22,14 +23,12 @@ const updateDateTime = () => {
   });
 };
 
-// Use Vue Router
+const authStore = useAuthStore();
 const router = useRouter();
 
-// Logout function with redirect
-const logout = () => {
-  console.log("Logging out...");
-  // Implement actual logout logic here, e.g., clearing user session or tokens
-  router.push("/login"); // Redirect to the login page
+const logout = async () => {
+  await authStore.logout(); // Call the logout action from Pinia store
+  router.push("/login"); // Redirect to login page after logout
 };
 
 // Initialize and keep updating the time every second
@@ -78,11 +77,6 @@ onMounted(() => {
                 class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2 md:text-lg"
               >
                 <p>Logout</p>
-                <!-- Hide the text on small screens -->
-                <!-- <span class="hidden sm:block">Logout</span> -->
-                <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"></path>
-                </svg> -->
                 <RiLogoutBoxRLine />
               </button>
             </div>
