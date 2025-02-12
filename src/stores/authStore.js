@@ -11,7 +11,10 @@ export const useAuthStore = defineStore('auth', {
     async register(userData) {
       try {
         const response = await api.post('/register', userData);
-        this.setAuthData(response.data.token);
+        
+        // Store both token and user data
+        this.setAuthData(response.data.token, response.data.user);
+        
         return response;
       } catch (error) {
         throw error.response.data;
@@ -39,9 +42,15 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    setAuthData(token) {
+    setAuthData(token, user) {
       this.token = token;
+      this.user = user;
+      
+      // Store token and user in localStorage
       localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+    
+      // Set token in API headers
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     },
 
