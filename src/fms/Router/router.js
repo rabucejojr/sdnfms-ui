@@ -2,6 +2,7 @@ import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 import Login from '../Auth/Login.vue';
 import Register from '../Auth/Register.vue';
 import Home from '../Pages/Home.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 const routes = [
   { path: '/', redirect: '/login' },
