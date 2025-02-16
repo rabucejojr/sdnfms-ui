@@ -39,6 +39,8 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const searchQuery = ref('');
 
+const API = process.env.API;
+
 // Computed properties for filtering and paginating files
 const filteredFiles = computed(() => {
   if (!Array.isArray(recentFiles.value)) return [];
@@ -77,7 +79,7 @@ const goToPage = (page) => {
 // API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/files');
+    const response = await fetch(`${API}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -118,7 +120,7 @@ const deleteFile = (data) => {
 const handleDeleteComplete = async (success) => {
   if (success) {
     try {
-      const response = await axios.delete(`http://127.0.0.1:8000/files/${selectedFile.value.id}`);
+      const response = await axios.delete(`${API}/${selectedFile.value.id}`);
       
       if (response.status === 200) {
         // Remove deleted file from local state

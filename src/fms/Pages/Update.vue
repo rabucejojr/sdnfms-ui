@@ -41,6 +41,8 @@ const date = ref(formData.value.date);
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
+const API = process.env.API;
+
 // Watch for changes in props.data and update formData
 watch(
   () => props.data,
@@ -74,7 +76,7 @@ const handleUpdate = async () => {
     payload.append("date", date.value);
 
     const response = await axios.post(
-      `http://127.0.0.1:8000/api/files/${props.data.id}`,
+      `${API}/${props.data.id}`,
       payload
     );
 

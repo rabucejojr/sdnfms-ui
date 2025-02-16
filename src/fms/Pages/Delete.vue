@@ -34,13 +34,15 @@ const closeModal = () => emit('close');
 // Fetch updated file list after deletion
 const fetchFiles = async () => {
   try {
-    const response = await axios.get('http://192.168.1.13:8000/api/files');
+    const response = await axios.get(process.env.API);
     return response.data.files;
   } catch (error) {
     console.error('Error fetching files:', error);
     return [];
   }
 };
+
+const API = process.env.API;
 
 /**
  * Handles the file deletion process
@@ -49,7 +51,7 @@ const fetchFiles = async () => {
 const handleDelete = async () => {
   try {
     // Make DELETE request to API
-    const response = await axios.delete(`http://127.0.0.1:8000/api/files/${props.file.id}`);
+    const response = await axios.delete(`${API}/${props.file.id}`);
     
     if (response.status === 200) {
       // Fetch updated file list

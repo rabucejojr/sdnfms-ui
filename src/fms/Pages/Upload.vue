@@ -33,6 +33,8 @@ const date = ref('');
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
+const API = process.env.API;
+
 // Handle file input change event
 const onFileChange = (event) => {
   file.value = event.target.files[0];
@@ -48,7 +50,7 @@ const handleUpload = async () => {
 
   // Check if file already exists
   try {
-    const checkResponse = await axios.get('http://127.0.0.1:8000/api/files');
+    const checkResponse = await axios.get(`${API}`);
     const existingFiles = checkResponse.data.files;
     
     const fileExists = existingFiles.some(existingFile => 
@@ -73,9 +75,10 @@ const handleUpload = async () => {
   formData.append('category', category.value);
   formData.append('date', date.value);
   
+
   try {
     // Send POST request to API endpoint
-    const response = await axios.post('http://127.0.0.1:8000/api/files', formData, {
+    const response = await axios.post(`${API}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
