@@ -42,7 +42,7 @@ const fetchFiles = async () => {
   }
 };
 
-const API = process.env.API;
+const API = import.meta.env.API;
 
 /**
  * Handles the file deletion process

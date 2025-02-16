@@ -33,7 +33,7 @@ const date = ref('');
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
-const API = process.env.API;
+const API = import.meta.env.API;
 
 // Handle file input change event
 const onFileChange = (event) => {

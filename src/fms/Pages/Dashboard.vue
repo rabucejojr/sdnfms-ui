@@ -39,7 +39,7 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const searchQuery = ref('');
 
-const API = process.env.API;
+const API = import.meta.env.API;
 
 // Computed properties for filtering and paginating files
 const filteredFiles = computed(() => {
@@ -72,7 +72,6 @@ const paginatedFiles = computed(() => {
 // Navigation methods for pagination
 const goToPage = (page) => {
   if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
   }
 };
 
