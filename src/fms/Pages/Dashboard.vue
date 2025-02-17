@@ -1,27 +1,27 @@
 <script setup>
 // Import necessary Vue and component dependencies
-import { ref, onMounted, computed } from 'vue';
-import Update from './Update.vue';
-import Upload from './Upload.vue';
-import Delete from './Delete.vue';
-import Preview from './Preview.vue';
-import { 
-  RiEdit2Line, 
-  RiDeleteBin2Line, 
-  RiUpload2Line, 
-  RiEyeLine, 
-  RiSearchLine 
-} from '@remixicon/vue';
-import Card from '@/components/Card.vue';
-import Button from '@/components/Button.vue';
-import Header from '@/components/Header.vue';
-import axios from 'axios';
+import { ref, onMounted, computed } from "vue";
+import Update from "./Update.vue";
+import Upload from "./Upload.vue";
+import Delete from "./Delete.vue";
+import Preview from "./Preview.vue";
+import {
+  RiEdit2Line,
+  RiDeleteBin2Line,
+  RiUpload2Line,
+  RiEyeLine,
+  RiSearchLine,
+} from "@remixicon/vue";
+import Card from "@/components/Card.vue";
+import Button from "@/components/Button.vue";
+import Header from "@/components/Header.vue";
+import axios from "axios";
 
 // Define component props
 defineProps({
   padding: {
     type: String,
-    default: 'mt-2',
+    default: "mt-2",
   },
 });
 
@@ -37,17 +37,17 @@ const stats = ref({
 const recentFiles = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
-const searchQuery = ref('');
+const searchQuery = ref("");
 
-const API = import.meta.env.API;
+const API = import.meta.env.VITE_API;
 
 // Computed properties for filtering and paginating files
 const filteredFiles = computed(() => {
   if (!Array.isArray(recentFiles.value)) return [];
-  
+
   // Filter files based on search query across multiple fields
   const query = searchQuery.value.toLowerCase();
-  return recentFiles.value.filter(file => {
+  return recentFiles.value.filter((file) => {
     return (
       file.filename?.toLowerCase().includes(query) ||
       file.uploader?.toLowerCase().includes(query) ||
@@ -58,9 +58,7 @@ const filteredFiles = computed(() => {
 });
 
 // Calculate total number of pages based on filtered results
-const totalPages = computed(() => 
-  Math.ceil(filteredFiles.value.length / pageSize.value)
-);
+const totalPages = computed(() => Math.ceil(filteredFiles.value.length / pageSize.value));
 
 // Get current page of files based on pagination settings
 const paginatedFiles = computed(() => {
@@ -78,17 +76,16 @@ const goToPage = (page) => {
 // API methods for fetching file data
 const fetchRecentFiles = async () => {
   try {
-    const response = await fetch(`${API}`);
+    const response = await fetch(`${API}/files`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
-    recentFiles.value = data.files ? data.files : [];
-    
+    recentFiles.value = data.files || [];
   } catch (error) {
-    console.error('Error fetching recent files:', error);
-    recentFiles.value = []; 
+    console.error("Error fetching recent files:", error.message || error);
+    recentFiles.value = [];
   }
 };
 
@@ -119,22 +116,24 @@ const deleteFile = (data) => {
 const handleDeleteComplete = async (success) => {
   if (success) {
     try {
-      const response = await axios.delete(`${API}/${selectedFile.value.id}`);
-      
+      const response = await axios.delete(`${API}/files/${selectedFile.value.id}`);
+
       if (response.status === 200) {
         // Remove deleted file from local state
-        recentFiles.value = recentFiles.value.filter(file => file.id !== selectedFile.value.id);
+        recentFiles.value = recentFiles.value.filter(
+          (file) => file.id !== selectedFile.value.id
+        );
 
         // Close modal dialog
         isDeleteModalOpen.value = false;
-        
+
         // Refresh file list from server
         setTimeout(() => {
-        props.fetchRecentFiles();
-      }, 500);
+          props.fetchRecentFiles();
+        }, 500);
       }
     } catch (error) {
-      console.error('Error deleting file:', error);
+      console.error("Error deleting file:", error);
     }
   }
 };
@@ -144,11 +143,11 @@ const handleUploadComplete = async (success) => {
   if (success) {
     // Close upload modal
     isUploadModalOpen.value = false;
-    
-    // Refresh file list from server  
+
+    // Refresh file list from server
     setTimeout(() => {
-        fetchRecentFiles();
-      }, 500);
+      fetchRecentFiles();
+    }, 500);
   }
 };
 
@@ -170,17 +169,17 @@ onMounted(fetchRecentFiles);
         <h2 class="text-sm sm:text-lg font-medium">Total Files</h2>
         <p class="text-3xl sm:text-4xl font-bold">{{ stats.totalFiles }}</p>
       </Card>
-      
+
       <Card bg="bg-green-500">
         <h2 class="text-sm sm:text-lg font-medium">Total Users</h2>
         <p class="text-3xl sm:text-4xl font-bold">{{ stats.totalUsers }}</p>
       </Card>
-      
+
       <Card bg="bg-yellow-500">
         <h2 class="text-sm sm:text-lg font-medium">Recent Uploads</h2>
         <p class="text-3xl sm:text-4xl font-bold">{{ stats.recentUploads }}</p>
       </Card>
-      
+
       <Card bg="bg-red-500">
         <h2 class="text-sm sm:text-lg font-medium">Storage Used</h2>
         <p class="text-3xl sm:text-4xl font-bold">{{ stats.storageUsed }} GB</p>
@@ -190,7 +189,9 @@ onMounted(fetchRecentFiles);
     <!-- Recent Files Section -->
     <section class="recent-files bg-white p-4 sm:p-6 rounded shadow">
       <!-- Search and Upload Controls -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0"
+      >
         <!-- Search Input with Icon -->
         <div class="relative">
           <input
@@ -227,7 +228,7 @@ onMounted(fetchRecentFiles);
               <th class="border p-3 text-center">Actions</th>
             </tr>
           </thead>
-          
+
           <!-- Table Body with File Rows -->
           <tbody>
             <tr
@@ -241,25 +242,27 @@ onMounted(fetchRecentFiles);
               <td class="border p-3">{{ data.category.toUpperCase() }}</td>
               <td class="border p-3">
                 <!-- Action Buttons -->
-                <div class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+                <div
+                  class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
+                >
                   <div class="items-center">
-                    <Button 
-                      @click="previewFile(data)" 
+                    <Button
+                      @click="previewFile(data)"
                       bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                     >
                       <RiEyeLine />
                     </Button>
                   </div>
-                  
-                  <Button 
-                    @click="updateFile(data)" 
+
+                  <Button
+                    @click="updateFile(data)"
                     bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiEdit2Line />
                   </Button>
-                  
-                  <Button 
-                    @click="deleteFile(data)" 
+
+                  <Button
+                    @click="deleteFile(data)"
                     bg="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiDeleteBin2Line />

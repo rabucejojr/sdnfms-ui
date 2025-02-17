@@ -41,7 +41,7 @@ const date = ref(formData.value.date);
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
-const API = import.meta.env.API;
+const API = import.meta.env.VITE_API;
 
 // Watch for changes in props.data and update formData
 watch(
@@ -75,10 +75,7 @@ const handleUpdate = async () => {
     payload.append("category", category.value);
     payload.append("date", date.value);
 
-    const response = await axios.post(
-      `${API}/${props.data.id}`,
-      payload
-    );
+    const response = await axios.post(`${API}/files/${props.data.id}`, payload);
 
     showSuccessModal.value = true;
 

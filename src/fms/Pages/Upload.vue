@@ -1,15 +1,15 @@
 <script setup>
 // Import required components and libraries
-import Modal from '@/components/Modal.vue';
-import Button from '@/components/Button.vue';
-import { ref } from 'vue';
-import axios from 'axios';
+import Modal from "@/components/Modal.vue";
+import Button from "@/components/Button.vue";
+import { ref } from "vue";
+import axios from "axios";
 
 // Define props for modal visibility control
 const props = defineProps({
-  isOpen: { 
-    type: Boolean, 
-    required: true 
+  isOpen: {
+    type: Boolean,
+    required: true,
   },
   fetchRecentFiles: {
     type: Function,
@@ -18,22 +18,22 @@ const props = defineProps({
 });
 
 // Define emitted events for parent component communication
-const emit = defineEmits(['close', 'upload', 'upload-complete']);
+const emit = defineEmits(["close", "upload", "upload-complete"]);
 
 // Handler to close the modal and notify parent
 const closeModal = () => {
-  emit('close');
+  emit("close");
 };
 
 // Initialize reactive form data variables
 const file = ref(null);
-const uploader = ref('');
-const category = ref('');
-const date = ref('');
+const uploader = ref("");
+const category = ref("");
+const date = ref("");
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
-const API = import.meta.env.API;
+const API = import.meta.env.VITE_API;
 
 // Handle file input change event
 const onFileChange = (event) => {
@@ -44,17 +44,17 @@ const onFileChange = (event) => {
 const handleUpload = async () => {
   // Validate file selection
   if (!file.value) {
-    alert('Please select a file before uploading.');
+    alert("Please select a file before uploading.");
     return;
   }
 
   // Check if file already exists
   try {
-    const checkResponse = await axios.get(`${API}`);
+    const checkResponse = await axios.get(`${API}/files`);
     const existingFiles = checkResponse.data.files;
-    
-    const fileExists = existingFiles.some(existingFile => 
-      existingFile.filename === file.value.name
+
+    const fileExists = existingFiles.some(
+      (existingFile) => existingFile.filename === file.value.name
     );
 
     if (fileExists) {
@@ -65,51 +65,51 @@ const handleUpload = async () => {
       return;
     }
   } catch (error) {
-    console.error('Error checking existing files:', error);
+    console.error("Error checking existing files:", error);
   }
 
   // Prepare form data for API request
   const formData = new FormData();
-  formData.append('file', file.value);
-  formData.append('uploader', uploader.value);
-  formData.append('category', category.value);
-  formData.append('date', date.value);
-  
+  formData.append("file", file.value);
+  formData.append("uploader", uploader.value);
+  formData.append("category", category.value);
+  formData.append("date", date.value);
 
   try {
     // Send POST request to API endpoint
-    const response = await axios.post(`${API}`, formData, {
+    const response = await axios.post(`${API}/files`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json',
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json",
       },
     });
 
-    if (response.status === 200) {
-      // Reset form fields after successful upload
+    if (response.status >= 200 && response.status < 300) {
+      // Reset form fields
       file.value = null;
-      uploader.value = '';
-      category.value = '';
-      date.value = '';
+      uploader.value = "";
+      category.value = "";
+      date.value = "";
 
       closeModal();
       showSuccessModal.value = true;
 
-      // Notify parent of success and auto-hide success modal
-      emit('upload-complete', true);
+      // Notify parent & refresh recent files
+      emit("upload-complete", true);
+      props.fetchRecentFiles();
+
       setTimeout(() => {
-        props.fetchRecentFiles();
         showSuccessModal.value = false;
       }, 1500);
     }
   } catch (error) {
-    // Handle upload failure with custom modal
+    // Handle errors with error modal
+    console.error("Upload failed:", error.response?.data || error.message);
     showErrorModal.value = true;
     setTimeout(() => {
       showErrorModal.value = false;
     }, 1500);
-    console.error(error);
-    emit('upload-complete', false);
+    emit("upload-complete", false);
   }
 };
 </script>
@@ -125,22 +125,19 @@ const handleUpload = async () => {
       <!-- Modal header with title and close button -->
       <div class="flex justify-between items-center border-b px-6 py-3">
         <h2 class="text-lg font-semibold text-gray-800">Upload</h2>
-        <button 
-          @click="closeModal" 
-          class="text-gray-400 hover:text-gray-600"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-6 w-6" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+        <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-              stroke-width="2" 
-              d="M6 18L18 6M6 6l12 12" 
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
             />
           </svg>
         </button>

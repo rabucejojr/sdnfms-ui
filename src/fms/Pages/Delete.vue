@@ -1,10 +1,10 @@
 <script setup>
 // Import required components and libraries
-import Modal from '@/components/Modal.vue';
-import Button from '@/components/Button.vue';
-import { RiCloseFill } from '@remixicon/vue'; // Icon for close button
-import axios from 'axios';
-import { ref } from 'vue';
+import Modal from "@/components/Modal.vue";
+import Button from "@/components/Button.vue";
+import { RiCloseFill } from "@remixicon/vue"; // Icon for close button
+import axios from "axios";
+import { ref } from "vue";
 
 // Define props with validation
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
     required: true,
     default: () => ({
       id: null,
-      filename: '',
+      filename: "",
     }),
     // File object containing details of file to be deleted
   },
@@ -28,8 +28,8 @@ const props = defineProps({
 const showSuccessModal = ref(false); // Controls visibility of success confirmation
 
 // Event handling setup
-const emit = defineEmits(['close', 'delete-complete']);
-const closeModal = () => emit('close');
+const emit = defineEmits(["close", "delete-complete"]);
+const closeModal = () => emit("close");
 
 // Fetch updated file list after deletion
 const fetchFiles = async () => {
@@ -37,12 +37,12 @@ const fetchFiles = async () => {
     const response = await axios.get(process.env.API);
     return response.data.files;
   } catch (error) {
-    console.error('Error fetching files:', error);
+    console.error("Error fetching files:", error);
     return [];
   }
 };
 
-const API = import.meta.env.API;
+const API = import.meta.env.VITE_API;
 
 /**
  * Handles the file deletion process
@@ -51,16 +51,16 @@ const API = import.meta.env.API;
 const handleDelete = async () => {
   try {
     // Make DELETE request to API
-    const response = await axios.delete(`${API}/${props.file.id}`);
-    
+    const response = await axios.delete(`${API}/files/${props.file.id}`);
+
     if (response.status === 200) {
       // Fetch updated file list
       const updatedFiles = await fetchFiles();
-      
+
       // Close main modal and notify parent of successful deletion with updated files
       closeModal();
-      emit('delete-complete', true, updatedFiles);
-      
+      emit("delete-complete", true, updatedFiles);
+
       // Show success modal briefly
       showSuccessModal.value = true;
       setTimeout(() => {
@@ -70,9 +70,9 @@ const handleDelete = async () => {
     }
   } catch (error) {
     // Handle error case
-    alert('Failed to delete file.');
+    alert("Failed to delete file.");
     console.error(error);
-    emit('delete-complete', false);
+    emit("delete-complete", false);
   }
 };
 </script>
@@ -95,7 +95,8 @@ const handleDelete = async () => {
       <!-- Modal body with confirmation message -->
       <template #body>
         <p class="text-gray-700">
-          Are you sure you want to delete "{{ file.filename }}"? This action cannot be undone.
+          Are you sure you want to delete "{{ file.filename }}"? This action cannot be
+          undone.
         </p>
       </template>
 
