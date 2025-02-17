@@ -1,39 +1,40 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 import { RiLogoutBoxRLine } from "@remixicon/vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
+import NavigationBar from "./NavigationBar.vue";
 
-const currentTime = ref('')
-const currentDate = ref('')
+const currentTime = ref("");
+const currentDate = ref("");
 
 defineProps({
-  pos: { type: String, default: '' },
-})
+  pos: { type: String, default: "" },
+});
 
 const updateDateTime = () => {
-  const now = new Date()
-  currentTime.value = now.toLocaleTimeString('en-US', {
-    timeZone: 'Asia/Manila',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString("en-US", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: true,
-  })
-  currentDate.value = now.toLocaleDateString('en-US', {
-    timeZone: 'Asia/Manila',
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
+  });
+  currentDate.value = now.toLocaleDateString("en-US", {
+    timeZone: "Asia/Manila",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 // Initialize and keep updating the time every second
 onMounted(() => {
-  updateDateTime()
-  setInterval(updateDateTime, 1000)
-})
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+});
 </script>
 
 <template>
@@ -60,7 +61,9 @@ onMounted(() => {
             <h1 class="font-bold uppercase text-[10px] sm:text-xs lg:text-sm">
               Republic of the Philippines
             </h1>
-            <h2 class="text-md sm:text-lg font-bold">Department of Science and Technology</h2>
+            <h2 class="text-md sm:text-lg font-bold">
+              Department of Science and Technology
+            </h2>
             <h3 class="text-yellow-300 text-sm sm:text-base lg:text-xl font-semibold">
               PSTO - Surigao del Norte
             </h3>
@@ -78,8 +81,8 @@ onMounted(() => {
             </div>
           </div>
           <!-- Logout Button -->
-        <div class="place-items-end pt-2">
-            <div class=" flex justify-end">
+          <div class="place-items-end pt-2">
+            <div class="flex justify-end">
               <button
                 @click="logout"
                 class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2 md:text-lg"
@@ -93,4 +96,7 @@ onMounted(() => {
       </div>
     </div>
   </header>
+  <div>
+    <div><NavigationBar /></div>
+  </div>
 </template>
