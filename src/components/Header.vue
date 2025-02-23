@@ -1,37 +1,33 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import Button from './Button.vue';
-import { useRouter } from 'vue-router';
-import { RiLogoutBoxRLine } from '@remixicon/vue';
+import { ref, onMounted } from "vue";
+import { RiLogoutBoxRLine } from "@remixicon/vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+import NavigationBar from "./NavigationBar.vue";
 
-
-const currentDateTime = ref('');
+const currentTime = ref("");
+const currentDate = ref("");
 
 defineProps({
-    pos:{type:String,default:''},
-})
+  pos: { type: String, default: "" },
+});
 
 const updateDateTime = () => {
-  currentDateTime.value = new Date().toLocaleString('en-US', {
-    timeZone: 'Asia/Manila',
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString("en-US", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
   });
-};
-
-// Use Vue Router
-const router = useRouter();
-
-// Logout function with redirect
-const logout = () => {
-  console.log('Logging out...');
-  // Implement actual logout logic here, e.g., clearing user session or tokens
-  router.push('/login');  // Redirect to the login page
+  currentDate.value = now.toLocaleDateString("en-US", {
+    timeZone: "Asia/Manila",
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 };
 
 // Initialize and keep updating the time every second
@@ -42,42 +38,57 @@ onMounted(() => {
 </script>
 
 <template>
-  <header :class="`${pos} bg-blue-500 text-black p-3`">
+  <header
+    class="w-full bg-blue-500 text-white shadow-lg z-50 p-3 lg:pt-0 max-md:pb-3 h-fit lg:max-h-[105px] lg:min-h-[105px]"
+  >
     <div>
-      <div class="px-4 mx-auto flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+      <div
+        class="px-0 mx-auto flex flex-col md:flex-row justify-between items-center lg:space-y-2 lg:px-4"
+      >
         <!-- Logo and Text -->
-        <div class="flex items-center space-x-4">
+        <img
+          src="@/assets/dostlogo.png"
+          alt="DOST Logo"
+          class="rounded block md:hidden 2xs:w-[4rem] 2xs:h-[4rem]"
+        />
+        <div class="flex items-center my-1 md:my-0 space-x-4">
           <img
             src="@/assets/dostlogo.png"
             alt="DOST Logo"
-            class="rounded w-24 h-24 lg:w-32 lg:h-32"
+            class="rounded hidden md:block sm:w-20 sm:h-20"
           />
-          <div class="text-center lg:text-left">
-            <h1 class="font-bold uppercase text-xs lg:text-sm">Republic of the Philippines</h1>
-            <h2 class="text-base lg:text-lg font-bold">Department of Science and Technology</h2>
-            <h3 class="text-yellow-300 text-lg lg:text-xl font-semibold">PSTO - Surigao del Norte</h3>
+          <div class="text-center md:text-left">
+            <h1 class="font-bold uppercase text-[10px] sm:text-xs lg:text-sm">
+              Republic of the Philippines
+            </h1>
+            <h2 class="text-md sm:text-lg font-bold">
+              Department of Science and Technology
+            </h2>
+            <h3 class="text-yellow-300 text-sm sm:text-base lg:text-xl font-semibold">
+              PSTO - Surigao del Norte
+            </h3>
           </div>
         </div>
         <!-- Date and Time -->
-        <div class="flex flex-col">
-          <div class="text-center lg:text-right text-sm">
-            <p>Philippine Standard Time:</p>
-            <p>{{ currentDateTime }}</p>
+        <div class="flex flex-col mt-0">
+          <div class="flex flex-col text-center md:text-right lg:text-left lg:flex-row">
+            <p class="text-md content-center sm:text-2xl font-bold">{{ currentTime }}</p>
+            <div class="lg:ml-4">
+              <p class="text-sm lg:text-base">{{ currentDate }}</p>
+              <p class="text-left uppercase text-[10px] sm:text-xs text-gray-300">
+                Philippine Standard Time
+              </p>
+            </div>
           </div>
           <!-- Logout Button -->
           <div class="place-items-end pt-2">
-            <div class="pt-2 flex justify-end">
+            <div class="flex justify-end">
               <button
                 @click="logout"
-                class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2  md:text-lg"
+                class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2 md:text-lg"
               >
-              <p>Logout</p>
-              <!-- Hide the text on small screens -->
-              <!-- <span class="hidden sm:block">Logout</span> -->
-                <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H3"></path>
-                </svg> -->
-                <RiLogoutBoxRLine/>
+                <p>Logout</p>
+                <RiLogoutBoxRLine />
               </button>
             </div>
           </div>
@@ -85,7 +96,7 @@ onMounted(() => {
       </div>
     </div>
   </header>
+  <div>
+    <div><NavigationBar /></div>
+  </div>
 </template>
-  
-
-  

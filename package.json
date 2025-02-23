@@ -10,9 +10,14 @@
   },
   "dependencies": {
     "@remixicon/vue": "^4.5.0",
+<<<<<<< HEAD
     "eslint": "^9.16.0",
+=======
+    "axios": "^1.7.9",
+    "pinia": "^2.3.1",
+>>>>>>> 76532f5444a5af4ba655f4c59e05454ae9cd67c9
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

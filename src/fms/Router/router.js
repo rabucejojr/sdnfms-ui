@@ -1,18 +1,30 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 import Login from '../Auth/Login.vue';
 import Register from '../Auth/Register.vue';
 import Home from '../Pages/Home.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 const routes = [
+  { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  { path: '/home', component: Home }, 
-  { path: "/", redirect: "/login" }, 
-]
+  {
+    path: '/home',
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (!authStore.token) {
+        next('/login'); // Redirect to login if no token exists
+      } else {
+        next();
+      }
+    }
+  }
+];
 
 const router = createRouter({
-  history: createMemoryHistory(import.meta.env.BASE_URL),
-  routes,
-})
+  history: createWebHistory(),
+  routes
+});
 
 export default router;
