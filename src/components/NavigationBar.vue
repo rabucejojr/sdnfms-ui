@@ -5,13 +5,13 @@
     >
       <ul class="flex space-x-4">
         <li>
-          <router-link to="/" class="hover:underline">Home</router-link>
+          <router-link to="/" class="hover:underline">File Repository</router-link>
         </li>
         <li>
-          <router-link to="/" class="hover:underline">Home</router-link>
+          <router-link to="/" class="hover:underline">Document Tracking</router-link>
         </li>
         <li>
-          <router-link to="/" class="hover:underline">Home</router-link>
+          <router-link to="/" class="hover:underline">Lorem, ipsum dolor.</router-link>
         </li>
       </ul>
     </div>
