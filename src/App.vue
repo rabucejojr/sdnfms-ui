@@ -1,6 +1,6 @@
 <script setup>
-import Login from './fms/Auth/Login.vue';
-import Register from './fms/Auth/Register.vue';
+import Login from '@/Auth/Login.vue';
+import Register from '@/Auth/Register.vue';
 import Dashboard from './fms/Pages/Dashboard.vue';
 import Update from './fms/Pages/Update.vue';
 import Navbar from '@/components/Navbar.vue'

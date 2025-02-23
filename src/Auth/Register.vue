@@ -43,70 +43,70 @@ const registerUser = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-      <h2 class="text-2xl font-bold text-center mb-6">Account Registration</h2>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <div class="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">Create an Account</h2>
+
       <form @submit.prevent="registerUser">
         <div class="mb-4">
-          <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+          <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
           <input
             v-model="name"
             type="text"
             id="name"
-            placeholder="Enter your name"
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            placeholder="Enter your full name"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
             required
           />
         </div>
+
         <div class="mb-4">
-          <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+          <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
           <input
             v-model="email"
             type="email"
             id="email"
             placeholder="Enter your email"
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
             required
           />
         </div>
+
         <div class="mb-4">
-          <label for="password" class="block text-gray-700 font-medium mb-2"
-            >Password</label
-          >
+          <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
           <input
             v-model="password"
             type="password"
             id="password"
             placeholder="Enter your password"
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
             required
           />
         </div>
-        <!-- <div class="mb-4">
-          <label for="conf_password" class="block text-gray-700 font-medium mb-2"
-            >Confirm Password</label
-          >
+
+        <div class="mb-4">
+          <label for="conf_password" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
           <input
             v-model="conf_password"
             type="password"
             id="conf_password"
             placeholder="Retype your password"
-            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
             required
           />
-        </div> -->
-        <div
-          class="flex flex-col sm:flex-row items-center mt-6 space-y-3 sm:space-y-0 sm:space-x-2"
-        >
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row items-center gap-3">
           <button
             type="submit"
-            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 text-center w-2/3 flex justify-center items-center"
+            class="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition duration-200 w-full sm:w-auto flex-1 text-center"
           >
-            Register
+            {{ isLoading ? "Registering..." : "Register" }}
           </button>
+          
           <router-link
             to="/login"
-            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 flex-1 sm:w-40 w-2/3 flex justify-center items-center"
+            class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-200 w-full sm:w-auto flex-1 text-center"
           >
             Login
           </router-link>
@@ -116,12 +116,12 @@ const registerUser = async () => {
       <!-- Modal -->
       <Modal :isOpen="isModalOpen" :title="modalTitle" @close="isModalOpen = false">
         <template #body>
-          <p>{{ modalMessage }}</p>
+          <p class="text-gray-700">{{ modalMessage }}</p>
         </template>
         <template #footer>
           <button
             @click="isModalOpen = false"
-            class="bg-blue-500 text-white px-4 py-2 rounded"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           >
             Close
           </button>
