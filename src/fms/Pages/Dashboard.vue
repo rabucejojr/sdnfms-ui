@@ -162,7 +162,7 @@ onMounted(fetchRecentFiles);
 
 <template>
   <Header />
-  <div class="p-4 sm:p-6 bg-gray-100 min-h-screen">
+  <div class="p-2 sm:pl-6 pr-6 bg-gray-100 min-h-screen">
     <!-- Stats Overview Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       <Card>

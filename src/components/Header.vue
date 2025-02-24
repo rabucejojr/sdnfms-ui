@@ -7,6 +7,9 @@ import NavigationBar from "./NavigationBar.vue";
 
 const currentTime = ref("");
 const currentDate = ref("");
+const router = useRouter();
+const errorMessage = ref("");
+const authStore = useAuthStore();
 
 defineProps({
   pos: { type: String, default: "" },
@@ -28,6 +31,15 @@ const updateDateTime = () => {
     month: "short",
     year: "numeric",
   });
+};
+
+const logout = async () => {
+  try {
+    await authStore.logout(); // Calls the Pinia store's logout method
+    router.push("/login");
+  } catch (error) {
+    errorMessage.value = error.message || "Logout failed!";
+  }
 };
 
 // Initialize and keep updating the time every second
