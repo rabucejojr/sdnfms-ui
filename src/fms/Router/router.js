@@ -3,7 +3,7 @@ import Home from '../Pages/Home.vue';
 import { useAuthStore } from '@/stores/authStore';
 import Login from '@/Auth/Login.vue';
 import Register from '@/Auth/Register.vue';
-import dmsDashboard from '@/dms/Dashboard.vue';
+import dmsDashboard from '@/dms/Pages/Dashboard.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
