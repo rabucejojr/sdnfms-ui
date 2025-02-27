@@ -26,8 +26,9 @@ const closeModal = () => {
 
 // Initialize reactive form data variables
 const file = ref(null);
-const uploader = ref("");
-const category = ref("");
+const subject = ref("");
+const title = ref("");
+const priority = ["Received", "Processing", "Approved", "Released"];
 const date = ref("");
 const showSuccessModal = ref(false);
 
@@ -36,7 +37,7 @@ const onFileChange = (event) => {
   file.value = event.target.files[0];
 };
 
-const handleUpload = async () => {
+const handleAddDocument = async () => {
   console.log("add document");
 };
 </script>
@@ -50,7 +51,7 @@ const handleUpload = async () => {
     <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
       <!-- Modal header with title and close button -->
       <div class="flex justify-between items-center border-b px-6 py-3">
-        <h2 class="text-lg font-semibold text-gray-800">Add Document</h2>
+        <h2 class="text-lg font-semibold text-gray-800">Track Document</h2>
         <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,8 +71,8 @@ const handleUpload = async () => {
       </div>
 
       <!-- Modal body with upload form -->
-      <div class="px-6 py-4">
-        <form @submit.prevent="handleUpload" class="space-y-4">
+      <div class="px-6 py-2">
+        <form @submit.prevent="handleAddDocument" class="space-y-4">
           <!-- File input field -->
           <div>
             <input
@@ -82,30 +83,39 @@ const handleUpload = async () => {
             />
           </div>
 
-          <!-- Uploader name input -->
+          <!-- Concern Person name input -->
           <div>
             <input
               type="text"
-              id="uploader"
-              v-model="uploader"
-              placeholder="Uploader"
+              id="subject"
+              v-model="subject"
+              placeholder="Subject"
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
             />
           </div>
 
+          <!-- File title -->
+          <div>
+            <input
+              type="text"
+              id="title"
+              v-model="title"
+              placeholder="Document Title"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
+          </div>
           <!-- Category selection dropdown -->
           <div>
             <select
-              id="category"
-              v-model="category"
+              id="priority"
+              v-model="priority"
               class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              required
             >
-              <option value="" disabled>Category</option>
-              <option value="setup">SETUP</option>
-              <option value="gia">GIA</option>
-              <option value="others">Others</option>
+              <option v-for="status in priority" :key="status" :value="status">
+                {{ status }}
+              </option>
             </select>
           </div>
 
@@ -123,18 +133,12 @@ const handleUpload = async () => {
       </div>
 
       <!-- Modal footer with action buttons -->
-      <div class="flex justify-end space-x-2 px-6 py-3">
+      <div class="flex justify-center space-x-2 px-6 py-3">
         <Button
-          @click="handleUpload"
+          @click="handleAddDocument"
           bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
         >
-          Upload
-        </Button>
-        <Button
-          @click="closeModal"
-          bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-        >
-          Close
+          Generate Tracking Code
         </Button>
       </div>
     </div>

@@ -2,10 +2,9 @@
 import Button from "@/components/Button.vue";
 import Card from "@/components/Card.vue";
 import Header from "@/components/Header.vue";
-import { RiAddLine } from "@remixicon/vue";
 import { ref } from "vue";
 import AddDocument from "./AddDocument.vue";
-
+import { RiEdit2Line, RiDeleteBin2Line, RiEyeLine, RiAddLine } from "@remixicon/vue";
 // Define component props
 defineProps({
   padding: {
@@ -16,7 +15,7 @@ defineProps({
 
 const isAddDocumentModalOpen = ref(false);
 
-const handleUploadComplete = async (success) => {
+const handleAddDocumentComplement = async (success) => {
   console.log("Clicked");
 };
 
@@ -27,6 +26,42 @@ const stats = ref({
 
 const fetchRecentFiles = async () => {
   console.log("Fetch Files Clicked");
+};
+
+// Dummy static data
+const documents = ref([
+  {
+    id: 1,
+    trackingNumber: "TRK-20240225-001",
+    title: "Project Proposal",
+    personnel: "John Doe",
+    dateAdded: "2024-02-25",
+    deadline: "2024-03-10",
+    status: "Pending",
+  },
+  {
+    id: 2,
+    trackingNumber: "TRK-20240225-002",
+    title: "Budget Report",
+    personnel: "Jane Smith",
+    dateAdded: "2024-02-20",
+    deadline: "2024-03-05",
+    status: "Approved",
+  },
+  {
+    id: 3,
+    trackingNumber: "TRK-20240225-003",
+    title: "Meeting Minutes",
+    personnel: "Bob Johnson",
+    dateAdded: "2024-02-18",
+    deadline: "2024-03-01",
+    status: "Rejected",
+  },
+]);
+
+// Open upload modal
+const documentUpload = () => {
+  isAddDocumentModalOpen.value = true;
 };
 </script>
 
@@ -58,7 +93,7 @@ const fetchRecentFiles = async () => {
       >
         <!-- Upload Button -->
         <Button
-          @click=""
+          @click="documentUpload"
           bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center space-x-2"
         >
           <span>Add Document</span>
@@ -71,52 +106,67 @@ const fetchRecentFiles = async () => {
         <table class="w-full border-collapse">
           <thead>
             <tr class="bg-gray-200 text-gray-700 text-sm sm:text-base">
-              <th class="border p-3 text-left">File Name</th>
-              <th class="border p-3 text-left">Uploaded By</th>
-              <th class="border p-3 text-left">Date</th>
-              <th class="border p-3 text-left">Category</th>
-              <th class="border p-3 text-center">Actions</th>
+              <th class="border p-2">ID</th>
+              <th class="border p-2">Tracking Number</th>
+              <th class="border p-2">Title</th>
+              <th class="border p-2">Concern Personnel</th>
+              <th class="border p-2">Date Added</th>
+              <th class="border p-2">Deadline</th>
+              <th class="border p-2">Status</th>
+              <th class="border p-2 text-center">Action</th>
             </tr>
           </thead>
 
           <!-- Table Body with File Rows -->
           <tbody>
             <tr
-              v-for="data in file"
-              :key="data.id"
-              class="odd:bg-white even:bg-gray-50 text-sm sm:text-base"
+              v-for="doc in documents"
+              :key="doc.id"
+              class="odd:bg-white even:bg-gray-100 text-center"
             >
-              <td class="border p-3">{{ data.filename }}</td>
-              <td class="border p-3">{{ data.uploader }}</td>
-              <td class="border p-3">{{ data.date }}</td>
-              <td class="border p-3">{{ data.category.toUpperCase() }}</td>
-              <td class="border p-3">
-                <!-- Action Buttons -->
+              <td class="border p-2">{{ doc.id }}</td>
+              <td class="border p-2">{{ doc.trackingNumber }}</td>
+              <td class="border p-2">{{ doc.title }}</td>
+              <td class="border p-2">{{ doc.personnel }}</td>
+              <td class="border p-2">{{ doc.dateAdded }}</td>
+              <td class="border p-2">{{ doc.deadline }}</td>
+              <td class="border p-2">
+                <span
+                  :class="{
+                    'text-yellow-600': doc.status === 'Pending',
+                    'text-green-600': doc.status === 'Approved',
+                    'text-red-600': doc.status === 'Rejected',
+                  }"
+                >
+                  {{ doc.status }}
+                </span>
+              </td>
+              <td class="border p-2 text-center space-x-2">
                 <div
                   class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
                 >
                   <div class="items-center">
-                    <!-- <Button
+                    <Button
                       @click="previewFile(data)"
                       bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                     >
                       <RiEyeLine />
-                    </Button> -->
+                    </Button>
                   </div>
 
-                  <!-- <Button
+                  <Button
                     @click="updateFile(data)"
                     bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiEdit2Line />
-                  </Button> -->
+                  </Button>
 
-                  <!-- <Button
+                  <Button
                     @click="deleteFile(data)"
                     bg="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiDeleteBin2Line />
-                  </Button> -->
+                  </Button>
                 </div>
               </td>
             </tr>
@@ -127,7 +177,7 @@ const fetchRecentFiles = async () => {
         <AddDocument
           :isOpen="isAddDocumentModalOpen"
           @close="isAddDocumentModalOpen = false"
-          @upload-complete="handleUploadComplete"
+          @add-complete="handleAddDocumentComplement"
           :fetchRecentFiles="fetchRecentFiles"
         />
       </div>
