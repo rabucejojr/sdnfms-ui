@@ -4,7 +4,9 @@ import Card from "@/components/Card.vue";
 import Header from "@/components/Header.vue";
 import { ref } from "vue";
 import AddDocument from "./AddDocument.vue";
-import { RiEdit2Line, RiDeleteBin2Line, RiEyeLine, RiAddLine } from "@remixicon/vue";
+import Update from "@/dms/Pages/Update.vue";
+import { RiEdit2Line, RiEyeLine, RiAddLine } from "@remixicon/vue";
+import Preview from "@/dms/Pages/Preview.vue";
 // Define component props
 defineProps({
   padding: {
@@ -14,6 +16,9 @@ defineProps({
 });
 
 const isAddDocumentModalOpen = ref(false);
+const isPreviewModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+const selectedFile = ref({});
 
 const handleAddDocumentComplement = async (success) => {
   console.log("Clicked");
@@ -32,36 +37,46 @@ const fetchRecentFiles = async () => {
 const documents = ref([
   {
     id: 1,
-    trackingNumber: "TRK-20240225-001",
-    title: "Project Proposal",
-    personnel: "John Doe",
-    dateAdded: "2024-02-25",
-    deadline: "2024-03-10",
-    status: "Pending",
+    trackingNumber: "TRK-20240227-001",
+    subject: "Project Proposal Submission",
+    title: "AI-Driven Solutions for Local Governance",
+    status: "Processing",
+    dateUploaded: "2025-02-25",
+    deadline: "2025-03-10",
   },
   {
     id: 2,
-    trackingNumber: "TRK-20240225-002",
-    title: "Budget Report",
-    personnel: "Jane Smith",
-    dateAdded: "2024-02-20",
-    deadline: "2024-03-05",
-    status: "Approved",
+    trackingNumber: "TRK-20240227-002",
+    subject: "Budget Approval Request",
+    title: "Q2 Budget Allocation for R&D",
+    status: "Received",
+    dateUploaded: "2025-02-26",
+    deadline: "2025-03-15",
   },
   {
     id: 3,
-    trackingNumber: "TRK-20240225-003",
-    title: "Meeting Minutes",
-    personnel: "Bob Johnson",
-    dateAdded: "2024-02-18",
-    deadline: "2024-03-01",
-    status: "Rejected",
+    trackingNumber: "TRK-20240227-003",
+    subject: "Research Findings Submission",
+    title: "Climate Change Impact on Agriculture",
+    status: "Approved",
+    dateUploaded: "2025-02-27",
+    deadline: "2025-03-20",
   },
 ]);
 
 // Open upload modal
 const documentUpload = () => {
   isAddDocumentModalOpen.value = true;
+};
+// Modal action handlers for file operations
+const updateFile = (data) => {
+  selectedFile.value = data;
+  isEditModalOpen.value = true;
+};
+
+const previewFile = (data) => {
+  selectedFile.value = data;
+  isPreviewModalOpen.value = true;
 };
 </script>
 
@@ -109,10 +124,10 @@ const documentUpload = () => {
               <th class="border p-2">ID</th>
               <th class="border p-2">Tracking Number</th>
               <th class="border p-2">Title</th>
-              <th class="border p-2">Concern Personnel</th>
-              <th class="border p-2">Date Added</th>
-              <th class="border p-2">Deadline</th>
+              <th class="border p-2">Subject</th>
               <th class="border p-2">Status</th>
+              <th class="border p-2">Date Uploaded</th>
+              <th class="border p-2">Deadline</th>
               <th class="border p-2 text-center">Action</th>
             </tr>
           </thead>
@@ -127,9 +142,7 @@ const documentUpload = () => {
               <td class="border p-2">{{ doc.id }}</td>
               <td class="border p-2">{{ doc.trackingNumber }}</td>
               <td class="border p-2">{{ doc.title }}</td>
-              <td class="border p-2">{{ doc.personnel }}</td>
-              <td class="border p-2">{{ doc.dateAdded }}</td>
-              <td class="border p-2">{{ doc.deadline }}</td>
+              <td class="border p-2">{{ doc.subject }}</td>
               <td class="border p-2">
                 <span
                   :class="{
@@ -141,13 +154,16 @@ const documentUpload = () => {
                   {{ doc.status }}
                 </span>
               </td>
+              <td class="border p-2">{{ doc.dateUploaded }}</td>
+
+              <td class="border p-2">{{ doc.deadline }}</td>
               <td class="border p-2 text-center space-x-2">
                 <div
                   class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
                 >
                   <div class="items-center">
                     <Button
-                      @click="previewFile(data)"
+                      @click="previewFile(doc)"
                       bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                     >
                       <RiEyeLine />
@@ -155,17 +171,10 @@ const documentUpload = () => {
                   </div>
 
                   <Button
-                    @click="updateFile(data)"
+                    @click="updateFile(doc)"
                     bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiEdit2Line />
-                  </Button>
-
-                  <Button
-                    @click="deleteFile(data)"
-                    bg="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
-                  >
-                    <RiDeleteBin2Line />
                   </Button>
                 </div>
               </td>
@@ -174,6 +183,19 @@ const documentUpload = () => {
         </table>
 
         <!-- Modal Components -->
+        <Update
+          :isOpen="isEditModalOpen"
+          :data="selectedFile"
+          @close="isEditModalOpen = false"
+          :fetchRecentFiles="fetchRecentFiles"
+        />
+
+        <Preview
+          :isOpen="isPreviewModalOpen"
+          :data="selectedFile"
+          @close="isPreviewModalOpen = false"
+        />
+
         <AddDocument
           :isOpen="isAddDocumentModalOpen"
           @close="isAddDocumentModalOpen = false"
