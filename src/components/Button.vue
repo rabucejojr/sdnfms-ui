@@ -3,11 +3,11 @@
 const props = defineProps({
   type: {
     type: String,
-    default: 'button', // Default to 'button' type
+    default: "button", // Default to 'button' type
   },
   bg: {
     type: String,
-    default: 'bg-blue-500 text-white hover:bg-blue-600',
+    default: "", // Default to no background color
   },
   isDisabled: {
     type: Boolean,
@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 // Emit event for click actions
-const emit = defineEmits(['click']);
+const emit = defineEmits(["click"]);
 
 // Determine Tailwind styles based on the variant
 // const getButtonClass = () => {
@@ -34,12 +34,7 @@ const emit = defineEmits(['click']);
 </script>
 
 <template>
-  <button
-    :type="type"
-    :disabled="isDisabled"
-    @click="$emit('click')"
-    :class="`${bg}`"
-  >
-  <slot></slot>
+  <button :type="type" :disabled="isDisabled" @click="$emit('click')" :class="`${bg}`">
+    <slot></slot>
   </button>
 </template>
