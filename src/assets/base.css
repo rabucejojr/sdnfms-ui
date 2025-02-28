@@ -69,3 +69,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Apply Tailwind styles to vue-select */
+.vs__dropdown-toggle {
+  @apply border border-gray-300 rounded-md py-2 shadow-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+}
+
+.vs__selected {
+  @apply text-gray-900;
+}
+
+.vs__dropdown-menu {
+  @apply border border-gray-300 bg-white rounded-md shadow-lg text-black;
+}
+
+.vs__dropdown-option {
+  @apply px-2 py-2 hover:bg-blue-500 hover:text-white transition-all duration-200 cursor-pointer;
+}
+
+.vs__dropdown-option--selected {
+  @apply bg-blue-500 text-white;
+}
+
