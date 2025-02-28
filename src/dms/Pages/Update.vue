@@ -14,10 +14,10 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => ({
-      filename: "",
-      uploader: "",
-      category: "",
-      date: "",
+      title: "",
+      subject: "",
+      status: "",
+      deadline: "",
     }),
   },
   fetchRecentFiles: {
@@ -35,15 +35,22 @@ const formData = ref({ ...props.data });
 
 // Reactive variables for file data
 const file = ref(null);
-const uploader = ref(formData.value.uploader);
-const category = ref(formData.value.category);
-const date = ref(formData.value.date);
+const title = ref(formData.value.title);
+const subject = ref(formData.value.subject);
+const status = ref(formData.value.status);
+const deadline = ref(formData.value.deadline);
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
 const API = import.meta.env.VITE_API;
 
-// Watch for changes in props.data and update formData
+const priorityOptions = ref([
+  { id: 1, label: "Received" },
+  { id: 2, label: "Processing" },
+  { id: 3, label: "Approved" },
+  { id: 4, label: "Released" },
+]);
+
 watch(
   () => props.data,
   (newData) => {
@@ -60,48 +67,7 @@ const onFileChange = (event) => {
 
 // File Update using API
 const handleUpdate = async () => {
-  if (!props.data.id) {
-    showErrorModal.value = true;
-    return;
-  }
-
-  try {
-    const payload = new FormData();
-    payload.append("_method", "PUT"); // Laravel requires this for updating via POST
-    if (file.value) {
-      payload.append("file", file.value);
-    }
-    payload.append("uploader", uploader.value);
-    payload.append("category", category.value);
-    payload.append("date", date.value);
-
-    const response = await axios.post(`${API}/files/${props.data.id}`, payload);
-
-    showSuccessModal.value = true;
-
-    // Close success modal automatically after 3 seconds
-    setTimeout(() => {
-      showSuccessModal.value = false;
-      closeModal(); // Close the update modal
-    }, 1000);
-
-    props.fetchRecentFiles();
-
-    // Reset form fields
-    file.value = null;
-    uploader.value = "";
-    category.value = "";
-    date.value = "";
-    document.getElementById("file").value = ""; // Reset file input
-  } catch (error) {
-    showErrorModal.value = true;
-    // Close success modal automatically after 3 seconds
-    setTimeout(() => {
-      closeModal(); // Close the update modal
-    }, 1000);
-    showErrorModal.value = false;
-    props.fetchRecentFiles();
-  }
+  console.log("update document");
 };
 </script>
 
@@ -111,16 +77,17 @@ const handleUpdate = async () => {
     class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
   >
     <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
-      <Modal :isOpen="isOpen" title="File Update" @close="closeModal">
+      <Modal :isOpen="isOpen" title="Update Document" @close="closeModal">
         <template #header>
-          <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+          <Button @click="closeModal" class="text-gray-400 hover:text-gray-600">
             <RiCloseFill />
-          </button>
+          </Button>
         </template>
 
         <template #body>
           <!-- Modal Body -->
           <form @submit.prevent="handleUpdate" class="space-y-4">
+            <!-- File input field -->
             <div>
               <input
                 type="file"
@@ -130,36 +97,47 @@ const handleUpdate = async () => {
               />
             </div>
 
+            <!-- Concern Person name input -->
             <div>
               <input
                 type="text"
-                id="uploader"
-                v-model="uploader"
-                placeholder="Uploader"
+                id="subject"
+                v-model="subject"
+                placeholder="Subject"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                required
               />
             </div>
 
+            <!-- File title -->
             <div>
-              <select
-                id="category"
-                v-model="category"
+              <input
+                type="text"
+                id="title"
+                v-model="title"
+                placeholder="Document Title"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              >
-                <option value="" disabled>Category</option>
-                <option value="setup">SETUP</option>
-                <option value="gia">GIA</option>
-                <option value="others">Others</option>
-              </select>
+                required
+              />
+            </div>
+            <!-- Category selection dropdown -->
+            <div>
+              <v-select
+                v-model="status"
+                :options="priorityOptions"
+                label="label"
+                :reduce="(option) => option.label"
+              />
             </div>
 
+            <!-- Date input field -->
             <div>
               <input
                 type="date"
                 id="date"
-                v-model="date"
-                placeholder=""
+                v-model="deadline"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                required
               />
             </div>
           </form>
