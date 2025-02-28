@@ -38,24 +38,24 @@ const closeModal = () => emit("close");
         <template #body>
           <!-- Modal Body -->
           <div class="space-y-4">
-            <div>
-              <h4 class="text-gray-700 font-medium">Title:</h4>
+            <div class="flex items-center justify-start">
+              <h4 class="text-gray-700 font-medium pr-2">Title:</h4>
               <p type="file" class="text-gray-800">{{ data.title }}</p>
             </div>
-            <div>
-              <h4 class="text-gray-700 font-medium">Subject:</h4>
+            <div class="flex items-center justify-start">
+              <h4 class="text-gray-700 font-medium pr-2">Subject:</h4>
               <p class="text-gray-800">{{ data.subject }}</p>
             </div>
-            <div>
-              <h4 class="text-gray-700 font-medium">Status:</h4>
+            <div class="flex items-center justify-start">
+              <h4 class="text-gray-700 font-medium pr-2">Status:</h4>
               <p class="text-gray-800">{{ data.status }}</p>
             </div>
-            <div>
-              <h4 class="text-gray-700 font-medium">Date Uploaded:</h4>
+            <div class="flex items-center justify-start">
+              <h4 class="text-gray-700 font-medium pr-2">Date Uploaded:</h4>
               <p class="text-gray-800">{{ data.date_uploaded }}</p>
             </div>
-            <div>
-              <h4 class="text-gray-700 font-medium">Deadline:</h4>
+            <div class="flex items-center justify-start">
+              <h4 class="text-gray-700 font-medium pr-2">Deadline:</h4>
               <p class="text-gray-800">{{ data.deadline }}</p>
             </div>
           </div>
