@@ -41,7 +41,7 @@ const documents = ref([
     subject: "Project Proposal Submission",
     title: "AI-Driven Solutions for Local Governance",
     status: "Processing",
-    dateUploaded: "2025-02-25",
+    date_uploaded: "2025-02-25",
     deadline: "2025-03-10",
   },
   {
@@ -50,7 +50,7 @@ const documents = ref([
     subject: "Budget Approval Request",
     title: "Q2 Budget Allocation for R&D",
     status: "Received",
-    dateUploaded: "2025-02-26",
+    date_uploaded: "2025-02-26",
     deadline: "2025-03-15",
   },
   {
@@ -59,7 +59,7 @@ const documents = ref([
     subject: "Research Findings Submission",
     title: "Climate Change Impact on Agriculture",
     status: "Approved",
-    dateUploaded: "2025-02-27",
+    date_uploaded: "2025-02-27",
     deadline: "2025-03-20",
   },
 ]);
