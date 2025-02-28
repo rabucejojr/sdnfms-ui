@@ -3,6 +3,8 @@
 import Modal from "@/components/Modal.vue";
 import Button from "@/components/Button.vue";
 import { ref } from "vue";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 
 // Define props for modal visibility control
 const props = defineProps({
@@ -28,7 +30,13 @@ const closeModal = () => {
 const file = ref(null);
 const subject = ref("");
 const title = ref("");
-const priority = ["Received", "Processing", "Approved", "Released"];
+const priorityOptions = ref([
+  { id: 1, label: "Received" },
+  { id: 2, label: "Processing" },
+  { id: 3, label: "Approved" },
+  { id: 4, label: "Released" },
+]);
+const selectedPriority = ref(""); // This holds the selected priority
 const date = ref("");
 const showSuccessModal = ref(false);
 
@@ -52,7 +60,7 @@ const handleAddDocument = async () => {
       <!-- Modal header with title and close button -->
       <div class="flex justify-between items-center border-b px-6 py-3">
         <h2 class="text-lg font-semibold text-gray-800">Track Document</h2>
-        <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+        <Button @click="closeModal" class="text-gray-400 hover:text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -67,7 +75,7 @@ const handleAddDocument = async () => {
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
+        </Button>
       </div>
 
       <!-- Modal body with upload form -->
@@ -108,15 +116,13 @@ const handleAddDocument = async () => {
           </div>
           <!-- Category selection dropdown -->
           <div>
-            <select
-              id="priority"
-              v-model="priority"
-              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-            >
-              <option v-for="status in priority" :key="status" :value="status">
-                {{ status }}
-              </option>
-            </select>
+            <v-select
+              v-model="selectedPriority"
+              :options="priorityOptions"
+              label="label"
+              :reduce="(option) => option.id"
+              placeholder="Document Status"
+            />
           </div>
 
           <!-- Date input field -->
