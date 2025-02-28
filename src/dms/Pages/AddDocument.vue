@@ -5,6 +5,7 @@ import Button from "@/components/Button.vue";
 import { ref } from "vue";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+import axios from "axios";
 
 // Define props for modal visibility control
 const props = defineProps({
@@ -45,8 +46,11 @@ const onFileChange = (event) => {
   file.value = event.target.files[0];
 };
 
+const API = import.meta.env.VITE_API;
+
 const handleAddDocument = async () => {
-  console.log("add document");
+  const response = await axios.get(`${API}/document`);
+  console.log(response.data);
 };
 </script>
 
