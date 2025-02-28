@@ -154,7 +154,7 @@ const previewFile = (data) => {
                   {{ doc.status }}
                 </span>
               </td>
-              <td class="border p-2">{{ doc.dateUploaded }}</td>
+              <td class="border p-2">{{ doc.date_uploaded }}</td>
 
               <td class="border p-2">{{ doc.deadline }}</td>
               <td class="border p-2 text-center space-x-2">
