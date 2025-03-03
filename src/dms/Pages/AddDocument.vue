@@ -38,8 +38,11 @@ const priorityOptions = ref([
   { id: 4, label: "Released" },
 ]);
 const selectedPriority = ref(""); // This holds the selected priority
-const date = ref("");
+const date_uploaded = ref("");
 const showSuccessModal = ref(false);
+const status = ref("");
+const deadline = ref("");
+const showErrorModal = ref(false);
 
 // Handle file input change event
 const onFileChange = (event) => {
@@ -49,8 +52,95 @@ const onFileChange = (event) => {
 const API = import.meta.env.VITE_API;
 
 const handleAddDocument = async () => {
-  const response = await axios.get(`${API}/document`);
-  console.log(response.data);
+  // Validate file selection
+  if (!file.value) {
+    alert("Please select a file before uploading.");
+    return;
+  }
+
+  // Check if file already exists
+  try {
+    const checkResponse = await axios.get(`${API}/document`);
+    const existingFiles = checkResponse.data.files || [];
+
+    const fileExists = existingFiles.some(
+      (existingFile) => existingFile.filename === file.value.name
+    );
+
+    if (fileExists) {
+      showErrorModal.value = true;
+      setTimeout(() => {
+        showErrorModal.value = false;
+      }, 1500);
+      return;
+    }
+  } catch (error) {
+    console.error("Error checking existing files:", error);
+  }
+
+  // Prepare form data for API request
+  const formData = new FormData();
+  formData.append("file", file.value);
+  formData.append("title", title.value);
+  formData.append("subject", subject.value);
+  formData.append("status", selectedPriority.value);
+  formData.append("date_uploaded", date_uploaded.value);
+  formData.append("deadline", deadline.value);
+
+  try {
+    // Send POST request to API endpoint
+    const response = await axios.post(`${API}/document`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json",
+      },
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      // Reset form fields
+      file.value = null;
+      title.value = "";
+      subject.value = "";
+      selectedPriority.value = "";
+      date_uploaded.value = "";
+      deadline.value = "";
+
+      closeModal();
+      showSuccessModal.value = true;
+
+      // Notify parent & refresh recent files
+      emit("add-complete", true);
+      props.fetchRecentFiles();
+
+      setTimeout(() => {
+        showSuccessModal.value = false;
+      }, 1500);
+    }
+  } catch (error) {
+    // Handle errors with error modal
+    console.error("Upload failed:", error.response?.data || error.message);
+    showErrorModal.value = true;
+    setTimeout(() => {
+      showErrorModal.value = false;
+    }, 1500);
+    emit("add-complete", false);
+  }
+};
+
+// API methods for fetching file data
+const fetchRecentFiles = async () => {
+  try {
+    const response = await fetch(`${API}/document`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    recentFiles.value = data.files || [];
+  } catch (error) {
+    console.error("Error fetching recent files:", error.message || error);
+    recentFiles.value = [];
+  }
 };
 </script>
 
@@ -91,7 +181,7 @@ const handleAddDocument = async () => {
               type="file"
               id="file"
               @change="onFileChange"
-              class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
+              class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2 cursor-pointer"
             />
           </div>
 
@@ -129,15 +219,37 @@ const handleAddDocument = async () => {
             />
           </div>
 
-          <!-- Date input field -->
-          <div>
+          <!-- Date Uploaded field -->
+          <div class="relative group">
             <input
               type="date"
-              id="date"
-              v-model="date"
-              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              id="date_uploaded"
+              v-model="date_uploaded"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 cursor-pointer"
               required
             />
+            <!-- Tooltip -->
+            <div
+              class="absolute left-1/2 -top-5 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded px-2 py-1 transition-opacity duration-300"
+            >
+              Date Uploaded
+            </div>
+          </div>
+          <!-- Deadline field -->
+          <div class="relative group">
+            <input
+              type="date"
+              id="deadline"
+              v-model="deadline"
+              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 cursor-pointer"
+              required
+            />
+            <!-- Tooltip -->
+            <div
+              class="absolute left-1/2 -top-5 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded px-2 py-1 transition-opacity duration-300"
+            >
+              Deadline
+            </div>
           </div>
         </form>
       </div>

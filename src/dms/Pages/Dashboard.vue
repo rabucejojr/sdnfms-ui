@@ -2,11 +2,11 @@
 import Button from "@/components/Button.vue";
 import Card from "@/components/Card.vue";
 import Header from "@/components/Header.vue";
-import { ref } from "vue";
 import AddDocument from "./AddDocument.vue";
 import Update from "@/dms/Pages/Update.vue";
 import { RiEdit2Line, RiEyeLine, RiAddLine } from "@remixicon/vue";
 import Preview from "@/dms/Pages/Preview.vue";
+import { ref, onMounted, computed } from "vue";
 // Define component props
 defineProps({
   padding: {
@@ -19,9 +19,50 @@ const isAddDocumentModalOpen = ref(false);
 const isPreviewModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const selectedFile = ref({});
+const recentDocuments = ref([]);
+const currentPage = ref(1);
+const pageSize = ref(10);
+const searchQuery = ref("");
+
+// Computed properties for filtering and paginating files
+const filteredDocuments = computed(() => {
+  if (!Array.isArray(recentDocuments.value)) return [];
+
+  // Filter files based on search query across multiple fields
+  const query = searchQuery.value.toLowerCase();
+  return recentDocuments.value.filter((document) => {
+    return document.filename?.toLowerCase().includes(query);
+  });
+});
+
+// Calculate total number of pages based on filtered results
+const totalPages = computed(() =>
+  Math.ceil(filteredDocuments.value.length / pageSize.value)
+);
+
+// Get current page of files based on pagination settings
+const paginatedDocuments = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredDocuments.value.slice(start, end);
+});
+
+// Navigation methods for pagination
+const goToPage = (page) => {
+  if (page > 0 && page <= totalPages.value) {
+  }
+};
 
 const handleAddDocumentComplement = async (success) => {
-  console.log("Clicked");
+  if (success) {
+    // Close upload modal
+    isAddDocumentModalOpen.value = false;
+
+    // Refresh file list from server
+    setTimeout(() => {
+      fetchRecentDocuments();
+    }, 500);
+  }
 };
 
 const stats = ref({
@@ -29,8 +70,21 @@ const stats = ref({
   totalUsers: 15,
 });
 
-const fetchRecentFiles = async () => {
-  console.log("Fetch Files Clicked");
+const API = import.meta.env.VITE_API;
+
+const fetchRecentDocuments = async () => {
+  try {
+    const response = await fetch(`${API}/document`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    recentDocuments.value = data.files || [];
+  } catch (error) {
+    console.error("Error fetching recent files:", error.message || error);
+    recentDocuments.value = [];
+  }
 };
 
 // Dummy static data
@@ -135,35 +189,35 @@ const previewFile = (data) => {
           <!-- Table Body with File Rows -->
           <tbody>
             <tr
-              v-for="doc in documents"
-              :key="doc.id"
+              v-for="data in paginatedDocuments"
+              :key="data.id"
               class="odd:bg-white even:bg-gray-100 text-center"
             >
-              <td class="border p-2">{{ doc.id }}</td>
-              <td class="border p-2">{{ doc.trackingNumber }}</td>
-              <td class="border p-2">{{ doc.title }}</td>
-              <td class="border p-2">{{ doc.subject }}</td>
+              <td class="border p-2">{{ data.id }}</td>
+              <td class="border p-2">{{ data.trackingNumber }}</td>
+              <td class="border p-2">{{ data.title }}</td>
+              <td class="border p-2">{{ data.subject }}</td>
               <td class="border p-2">
                 <span
                   :class="{
-                    'text-yellow-600': doc.status === 'Pending',
-                    'text-green-600': doc.status === 'Approved',
-                    'text-red-600': doc.status === 'Rejected',
+                    'text-yellow-600': data.status === 'Pending',
+                    'text-green-600': data.status === 'Approved',
+                    'text-red-600': data.status === 'Rejected',
                   }"
                 >
-                  {{ doc.status }}
+                  {{ data.status }}
                 </span>
               </td>
-              <td class="border p-2">{{ doc.date_uploaded }}</td>
+              <td class="border p-2">{{ data.date_uploaded }}</td>
 
-              <td class="border p-2">{{ doc.deadline }}</td>
+              <td class="border p-2">{{ data.deadline }}</td>
               <td class="border p-2 text-center space-x-2">
                 <div
                   class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
                 >
                   <div class="items-center">
                     <Button
-                      @click="previewFile(doc)"
+                      @click="previewFile(data)"
                       bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                     >
                       <RiEyeLine />
@@ -171,7 +225,7 @@ const previewFile = (data) => {
                   </div>
 
                   <Button
-                    @click="updateFile(doc)"
+                    @click="updateFile(data)"
                     bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
                   >
                     <RiEdit2Line />
@@ -187,7 +241,7 @@ const previewFile = (data) => {
           :isOpen="isEditModalOpen"
           :data="selectedFile"
           @close="isEditModalOpen = false"
-          :fetchRecentFiles="fetchRecentFiles"
+          :fetchRecentFiles="fetchRecentDocuments"
         />
 
         <Preview
@@ -200,8 +254,40 @@ const previewFile = (data) => {
           :isOpen="isAddDocumentModalOpen"
           @close="isAddDocumentModalOpen = false"
           @add-complete="handleAddDocumentComplement"
-          :fetchRecentFiles="fetchRecentFiles"
+          :fetchRecentFiles="fetchRecentDocuments"
         />
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
+        <button
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+        >
+          Previous
+        </button>
+
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="goToPage(page)"
+          class="px-4 py-2 rounded"
+          :class="{
+            'bg-blue-500 text-white': page === currentPage,
+            'bg-gray-300 hover:bg-gray-400': page !== currentPage,
+          }"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
+        >
+          Next
+        </button>
       </div>
     </section>
   </div>
