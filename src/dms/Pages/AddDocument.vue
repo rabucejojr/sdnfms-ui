@@ -13,7 +13,7 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  fetchRecentFiles: {
+  fetchRecentDocuments: {
     type: Function,
     required: true,
   },
@@ -28,7 +28,7 @@ const closeModal = () => {
 };
 
 // Initialize reactive form data variables
-const file = ref(null);
+const document = ref(null);
 const subject = ref("");
 const title = ref("");
 const priorityOptions = ref([
@@ -43,103 +43,60 @@ const showSuccessModal = ref(false);
 const status = ref("");
 const deadline = ref("");
 const showErrorModal = ref(false);
+const isUploading = ref(false); // **Loading state**
 
 // Handle file input change event
-const onFileChange = (event) => {
-  file.value = event.target.files[0];
+const onDocumentChange = (event) => {
+  const selectedFile = event.target.files[0];
+  if (selectedFile) {
+    document.value = selectedFile;
+  }
 };
 
 const API = import.meta.env.VITE_API;
 
+const resetForm = () => {
+  document.value = null;
+  subject.value = "";
+  title.value = "";
+  selectedPriority.value = "";
+  date_uploaded.value = "";
+  deadline.value = "";
+};
+
 const handleAddDocument = async () => {
-  // Validate file selection
-  if (!file.value) {
-    alert("Please select a file before uploading.");
+  if (!document.value) {
+    alert("Please select a document.");
     return;
   }
 
-  // Check if file already exists
+  isUploading.value = true; // **Start loading state**
+  const selectedPriorityLabel = priorityOptions.value.find(
+    (option) => option.id === selectedPriority.value
+  )?.label;
   try {
-    const checkResponse = await axios.get(`${API}/document`);
-    const existingFiles = checkResponse.data.files || [];
+    const formData = new FormData();
+    formData.append("document", document.value);
+    formData.append("title", title.value);
+    formData.append("subject", subject.value);
+    formData.append("status", selectedPriorityLabel);
+    formData.append("date_uploaded", date_uploaded.value);
+    formData.append("deadline", deadline.value);
 
-    const fileExists = existingFiles.some(
-      (existingFile) => existingFile.filename === file.value.name
-    );
-
-    if (fileExists) {
-      showErrorModal.value = true;
-      setTimeout(() => {
-        showErrorModal.value = false;
-      }, 1500);
-      return;
-    }
-  } catch (error) {
-    console.error("Error checking existing files:", error);
-  }
-
-  // Prepare form data for API request
-  const formData = new FormData();
-  formData.append("file", file.value);
-  formData.append("title", title.value);
-  formData.append("subject", subject.value);
-  formData.append("status", selectedPriority.value);
-  formData.append("date_uploaded", date_uploaded.value);
-  formData.append("deadline", deadline.value);
-
-  try {
-    // Send POST request to API endpoint
     const response = await axios.post(`${API}/document`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "application/json",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
 
     if (response.status >= 200 && response.status < 300) {
-      // Reset form fields
-      file.value = null;
-      title.value = "";
-      subject.value = "";
-      selectedPriority.value = "";
-      date_uploaded.value = "";
-      deadline.value = "";
-
+      resetForm();
       closeModal();
-      showSuccessModal.value = true;
-
-      // Notify parent & refresh recent files
       emit("add-complete", true);
-      props.fetchRecentFiles();
-
-      setTimeout(() => {
-        showSuccessModal.value = false;
-      }, 1500);
+      props.fetchRecentDocuments();
     }
   } catch (error) {
-    // Handle errors with error modal
     console.error("Upload failed:", error.response?.data || error.message);
-    showErrorModal.value = true;
-    setTimeout(() => {
-      showErrorModal.value = false;
-    }, 1500);
-    emit("add-complete", false);
-  }
-};
-
-// API methods for fetching file data
-const fetchRecentFiles = async () => {
-  try {
-    const response = await fetch(`${API}/document`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    recentFiles.value = data.files || [];
-  } catch (error) {
-    console.error("Error fetching recent files:", error.message || error);
-    recentFiles.value = [];
+  } finally {
+    isUploading.value = false; // **End loading state**
   }
 };
 </script>
@@ -179,8 +136,8 @@ const fetchRecentFiles = async () => {
           <div>
             <input
               type="file"
-              id="file"
-              @change="onFileChange"
+              id="document"
+              @change="onDocumentChange"
               class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2 cursor-pointer"
             />
           </div>
