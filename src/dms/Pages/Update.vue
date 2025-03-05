@@ -17,10 +17,11 @@ const props = defineProps({
       title: "",
       subject: "",
       status: "",
+      date_uploaded: "",
       deadline: "",
     }),
   },
-  fetchRecentFiles: {
+  fetchRecentDocuments: {
     type: Function,
     required: true,
   },
@@ -32,17 +33,19 @@ const closeModal = () => emit("close");
 
 // Reactive form data initialized with the prop
 const formData = ref({ ...props.data });
+const API = import.meta.env.VITE_API;
 
 // Reactive variables for file data
-const file = ref(null);
+const document = ref(null);
 const title = ref(formData.value.title);
 const subject = ref(formData.value.subject);
 const status = ref(formData.value.status);
+const date_uploaded = ref(formData.value.date_uploaded);
 const deadline = ref(formData.value.deadline);
+
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
-
-const API = import.meta.env.VITE_API;
+const selectedPriority = ref("");
 
 const priorityOptions = ref([
   { id: 1, label: "Received" },
@@ -60,14 +63,68 @@ watch(
 );
 
 // Handle file selection
-const onFileChange = (event) => {
-  const selectedFile = event.target.files[0]; // Get the selected file
-  file.value = selectedFile ? selectedFile : null; // Assign file or null
+const onDocumentChange = (event) => {
+  const selectedFile = event.target.files[0];
+  if (selectedFile) {
+    document.value = selectedFile;
+  }
 };
 
-// File Update using API
+const resetForm = () => {
+  document.value = null;
+  subject.value = "";
+  title.value = "";
+  selectedPriority.value = "";
+  date_uploaded.value = "";
+  deadline.value = "";
+};
+
+// Document Update using API
 const handleUpdate = async () => {
-  console.log("update document");
+  const selectedPriorityLabel = priorityOptions.value.find(
+    (option) => option.id === selectedPriority.value
+  )?.label;
+
+  if (!props.data.id) {
+    showErrorModal.value = true;
+    return;
+  }
+
+  try {
+    const payload = new FormData();
+    payload.append("_method", "PUT");
+    if (file.value) {
+      payload.append("document", document.value);
+    }
+    payload.append("title", title.value);
+    payload.append("subject", subject.value);
+    payload.append("status", selectedPriorityLabel);
+    payload.append("date_uploaded", date_uploaded.value);
+    payload.append("deadline", deadline.value);
+
+    const response = await axios.post(`${API}/document/${props.data.id}`, payload);
+
+    showSuccessModal.value = true;
+
+    // Close success modal automatically after 3 seconds
+    setTimeout(() => {
+      showSuccessModal.value = false;
+      closeModal(); // Close the update modal
+    }, 1000);
+
+    props.fetchRecentDocuments();
+
+    // Reset form fields
+    resetForm();
+  } catch (error) {
+    showErrorModal.value = true;
+    // Close success modal automatically after 3 seconds
+    setTimeout(() => {
+      closeModal(); // Close the update modal
+    }, 1000);
+    showErrorModal.value = false;
+    props.fetchRecentDocuments();
+  }
 };
 </script>
 
@@ -91,8 +148,8 @@ const handleUpdate = async () => {
             <div>
               <input
                 type="file"
-                id="file"
-                @change="onFileChange"
+                id="document"
+                @change="onDocumentChange"
                 class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
               />
             </div>
@@ -130,7 +187,17 @@ const handleUpdate = async () => {
               />
             </div>
 
-            <!-- Date input field -->
+            <!-- Date uploaded field -->
+            <div>
+              <input
+                type="date"
+                id="date"
+                v-model="date_uploaded"
+                class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                required
+              />
+            </div>
+            <!-- Deadline field -->
             <div>
               <input
                 type="date"
@@ -165,7 +232,7 @@ const handleUpdate = async () => {
     <Modal v-if="showSuccessModal" :isOpen="showSuccessModal" title="Success">
       <template #body>
         <div class="text-center">
-          <p class="text-green-600 font-medium">File updated successfully!</p>
+          <p class="text-green-600 font-medium">Document updated successfully!</p>
         </div>
       </template>
     </Modal>
@@ -174,7 +241,7 @@ const handleUpdate = async () => {
     <Modal v-if="showErrorModal" :isOpen="showErrorModal" title="Error">
       <template #body>
         <div class="text-center">
-          <p class="text-red-600 font-medium">Failed to update file!</p>
+          <p class="text-red-600 font-medium">Failed to update document!</p>
         </div>
       </template>
     </Modal>
