@@ -79,7 +79,7 @@ const fetchRecentDocuments = async () => {
   }
 };
 
-const handleAddDocumentComplement = async (success) => {
+const handleAddDocumentComplete = async (success) => {
   if (success) {
     // Close upload modal
     isAddDocumentModalOpen.value = false;
@@ -228,7 +228,7 @@ onMounted(fetchRecentDocuments);
       <AddDocument
         :isOpen="isAddDocumentModalOpen"
         @close="isAddDocumentModalOpen = false"
-        @add-complete="handleAddDocumentComplement"
+        @add-complete="handleAddDocumentComplete"
         :fetchRecentDocuments="fetchRecentDocuments"
       />
     </section>
