@@ -5,17 +5,13 @@ import Update from "./Update.vue";
 import Upload from "./Upload.vue";
 import Delete from "./Delete.vue";
 import Preview from "./Preview.vue";
-import {
-  RiEdit2Line,
-  RiDeleteBin2Line,
-  RiUpload2Line,
-  RiEyeLine,
-  RiSearchLine,
-} from "@remixicon/vue";
+
+import { RiEdit2Line, RiDeleteBin2Line, RiUpload2Line, RiEyeLine } from "@remixicon/vue";
 import Card from "@/components/Card.vue";
 import Button from "@/components/Button.vue";
 import Header from "@/components/Header.vue";
 import axios from "axios";
+import SearchComponent from "@/components/SearchComponent.vue";
 
 // Define component props
 defineProps({
@@ -156,6 +152,10 @@ const goToUpload = () => {
   isUploadModalOpen.value = true;
 };
 
+const query = (query) => {
+  searchQuery.value = query;
+};
+
 // Fetch initial data when component mounts
 onMounted(fetchRecentFiles);
 </script>
@@ -193,18 +193,7 @@ onMounted(fetchRecentFiles);
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0"
       >
         <!-- Search Input with Icon -->
-        <div class="relative">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search files by filename ..."
-            class="px-4 py-2 pl-10 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none w-full"
-          />
-          <RiSearchLine
-            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            size="20"
-          />
-        </div>
+        <SearchComponent :searchQuery="query" />
 
         <!-- Upload Button -->
         <Button
