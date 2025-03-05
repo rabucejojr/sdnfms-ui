@@ -12,6 +12,7 @@ import Button from "@/components/Button.vue";
 import Header from "@/components/Header.vue";
 import axios from "axios";
 import SearchComponent from "@/components/SearchComponent.vue";
+import DataTable from "@/components/DataTable.vue";
 
 // Define component props
 defineProps({
@@ -195,7 +196,7 @@ onMounted(fetchRecentFiles);
         <!-- Search Input with Icon -->
         <SearchComponent :searchQuery="query" />
 
-        <!-- Upload Button -->
+        <!-- Upload Button Component -->
         <Button
           @click="goToUpload"
           bg="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center space-x-2"
@@ -205,95 +206,88 @@ onMounted(fetchRecentFiles);
         </Button>
       </div>
 
-      <!-- Files Table -->
-      <div class="overflow-x-auto">
-        <table class="w-full border-collapse">
-          <thead>
-            <tr class="bg-gray-200 text-gray-700 text-sm sm:text-base">
-              <th class="border p-3 text-left">File Name</th>
-              <th class="border p-3 text-left">Uploaded By</th>
-              <th class="border p-3 text-left">Date</th>
-              <th class="border p-3 text-left">Category</th>
-              <th class="border p-3 text-center">Actions</th>
-            </tr>
-          </thead>
+      <!-- Data table with pagination for documents -->
+      <DataTable
+        :items="paginatedFiles"
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        :goToPage="goToPage"
+      >
+        <!-- Table Headers -->
+        <template #header>
+          <th class="border p-3 text-left">File Name</th>
+          <th class="border p-3 text-left">Uploaded By</th>
+          <th class="border p-3 text-left">Date</th>
+          <th class="border p-3 text-left">Category</th>
+          <th class="border p-3 text-center">Actions</th>
+        </template>
 
-          <!-- Table Body with File Rows -->
-          <tbody>
-            <tr
-              v-for="data in paginatedFiles"
-              :key="data.id"
-              class="odd:bg-white even:bg-gray-50 text-sm sm:text-base"
+        <!-- Table Rows -->
+        <template #row="{ item }">
+          <td class="border p-3">{{ item.filename }}</td>
+          <td class="border p-3">{{ item.uploader }}</td>
+          <td class="border p-3">{{ item.date }}</td>
+          <td class="border p-3">{{ item.category.toUpperCase() }}</td>
+          <td class="border p-3 text-center space-x-2">
+            <div
+              class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
             >
-              <td class="border p-3">{{ data.filename }}</td>
-              <td class="border p-3">{{ data.uploader }}</td>
-              <td class="border p-3">{{ data.date }}</td>
-              <td class="border p-3">{{ data.category.toUpperCase() }}</td>
-              <td class="border p-3">
-                <!-- Action Buttons -->
-                <div
-                  class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
-                >
-                  <div class="items-center">
-                    <Button
-                      @click="previewFile(data)"
-                      bg="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
-                    >
-                      <RiEyeLine />
-                    </Button>
-                  </div>
+              <button
+                @click="previewFile(item)"
+                class="bg-green-500 hover:bg-green-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
+              >
+                <RiEyeLine />
+              </button>
 
-                  <Button
-                    @click="updateFile(data)"
-                    bg="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
-                  >
-                    <RiEdit2Line />
-                  </Button>
+              <button
+                @click="updateFile(item)"
+                class="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
+              >
+                <RiEdit2Line />
+              </button>
 
-                  <Button
-                    @click="deleteFile(data)"
-                    bg="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
-                  >
-                    <RiDeleteBin2Line />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              <button
+                @click="deleteFile(item)"
+                class="bg-red-500 hover:bg-red-700 text-white p-2 rounded w-full sm:w-auto flex justify-center items-center"
+              >
+                <RiDeleteBin2Line />
+              </button>
+            </div>
+          </td>
+        </template>
+      </DataTable>
+      <!-- Data table -->
 
-        <!-- Modal Components -->
-        <Update
-          :isOpen="isEditModalOpen"
-          :data="selectedFile"
-          @close="isEditModalOpen = false"
-          :fetchRecentFiles="fetchRecentFiles"
-        />
+      <!-- Modal Components -->
+      <Update
+        :isOpen="isEditModalOpen"
+        :data="selectedFile"
+        @close="isEditModalOpen = false"
+        :fetchRecentFiles="fetchRecentFiles"
+      />
 
-        <Preview
-          :isOpen="isPreviewModalOpen"
-          :data="selectedFile"
-          @close="isPreviewModalOpen = false"
-        />
+      <Preview
+        :isOpen="isPreviewModalOpen"
+        :data="selectedFile"
+        @close="isPreviewModalOpen = false"
+      />
 
-        <Delete
-          :isOpen="isDeleteModalOpen"
-          :file="selectedFile"
-          @close="isDeleteModalOpen = false"
-          @delete-complete="handleDeleteComplete"
-          :fetchRecentFiles="fetchRecentFiles"
-        />
+      <Delete
+        :isOpen="isDeleteModalOpen"
+        :file="selectedFile"
+        @close="isDeleteModalOpen = false"
+        @delete-complete="handleDeleteComplete"
+        :fetchRecentFiles="fetchRecentFiles"
+      />
 
-        <Upload
-          :isOpen="isUploadModalOpen"
-          @close="isUploadModalOpen = false"
-          @upload-complete="handleUploadComplete"
-          :fetchRecentFiles="fetchRecentFiles"
-        />
-      </div>
-
+      <Upload
+        :isOpen="isUploadModalOpen"
+        @close="isUploadModalOpen = false"
+        @upload-complete="handleUploadComplete"
+        :fetchRecentFiles="fetchRecentFiles"
+      />
       <!-- Pagination Controls -->
-      <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
+      <!-- <div class="flex flex-wrap justify-center items-center space-x-2 mt-4">
         <button
           class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:bg-gray-200"
           :disabled="currentPage === 1"
@@ -322,7 +316,7 @@ onMounted(fetchRecentFiles);
         >
           Next
         </button>
-      </div>
+      </div> -->
     </section>
   </div>
 </template>
