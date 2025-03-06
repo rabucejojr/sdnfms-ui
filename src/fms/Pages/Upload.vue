@@ -40,6 +40,13 @@ const onFileChange = (event) => {
   file.value = event.target.files[0];
 };
 
+// Category options for vue-select
+const categoryOptions = [
+  { id: "setup", label: "SETUP" },
+  { id: "gia", label: "GIA" },
+  { id: "others", label: "Others" },
+];
+
 // Main file upload handler
 const handleUpload = async () => {
   // Validate file selection
@@ -170,17 +177,13 @@ const handleUpload = async () => {
 
           <!-- Category selection dropdown -->
           <div>
-            <select
-              id="category"
+            <v-select
               v-model="category"
-              class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              required
-            >
-              <option value="" disabled>Category</option>
-              <option value="setup">SETUP</option>
-              <option value="gia">GIA</option>
-              <option value="others">Others</option>
-            </select>
+              :options="categoryOptions"
+              label="label"
+              class="w-full"
+              placeholder="Select category"
+            />
           </div>
 
           <!-- Date input field -->
