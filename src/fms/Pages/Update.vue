@@ -43,11 +43,21 @@ const showErrorModal = ref(false);
 
 const API = import.meta.env.VITE_API;
 
+// Category Options
+const categoryOptions = ref([
+  { id: "setup", label: "SETUP" },
+  { id: "gia", label: "GIA" },
+  { id: "others", label: "Others" },
+]);
+
 // Watch for changes in props.data and update formData
 watch(
   () => props.data,
   (newData) => {
     formData.value = { ...newData };
+    uploader.value = newData.uploader || "";
+    category.value = newData.category || "";
+    date.value = newData.date || "";
   },
   { deep: true }
 );
@@ -75,11 +85,11 @@ const handleUpdate = async () => {
     payload.append("category", category.value);
     payload.append("date", date.value);
 
-    const response = await axios.post(`${API}/files/${props.data.id}`, payload);
+    await axios.post(`${API}/files/${props.data.id}`, payload);
 
     showSuccessModal.value = true;
 
-    // Close success modal automatically after 3 seconds
+    // Close success modal automatically after 1 second
     setTimeout(() => {
       showSuccessModal.value = false;
       closeModal(); // Close the update modal
@@ -95,11 +105,10 @@ const handleUpdate = async () => {
     document.getElementById("file").value = ""; // Reset file input
   } catch (error) {
     showErrorModal.value = true;
-    // Close success modal automatically after 3 seconds
     setTimeout(() => {
+      showErrorModal.value = false;
       closeModal(); // Close the update modal
     }, 1000);
-    showErrorModal.value = false;
     props.fetchRecentFiles();
   }
 };
@@ -140,17 +149,15 @@ const handleUpdate = async () => {
               />
             </div>
 
+            <!-- Updated Category Dropdown -->
             <div>
-              <select
-                id="category"
+              <v-select
                 v-model="category"
-                class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              >
-                <option value="" disabled>Category</option>
-                <option value="setup">SETUP</option>
-                <option value="gia">GIA</option>
-                <option value="others">Others</option>
-              </select>
+                :options="categoryOptions"
+                label="label"
+                :reduce="(option) => option.id"
+                class="w-full"
+              />
             </div>
 
             <div>
