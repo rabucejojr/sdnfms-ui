@@ -95,6 +95,10 @@ const handleAddDocument = async () => {
     }
   } catch (error) {
     console.error("Upload failed:", error.response?.data || error.message);
+    showErrorModal.value = true;
+    setTimeout(() => {
+      showErrorModal.value = false;
+    }, 1000);
   } finally {
     isUploading.value = false; // **End loading state**
   }
@@ -228,6 +232,14 @@ const handleAddDocument = async () => {
     <template #body>
       <div class="text-center">
         <p class="text-black-600 font-semibold">Uploaded successfully!</p>
+      </div>
+    </template>
+  </Modal>
+  <!-- Error notification modal -->
+  <Modal v-if="showErrorModal" :isOpen="showErrorModal" title="Success">
+    <template #body>
+      <div class="text-center">
+        <p class="text-black-600 font-semibold">Document Already Exists!</p>
       </div>
     </template>
   </Modal>
