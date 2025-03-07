@@ -10,11 +10,16 @@ const props = defineProps({
   placeholder: {
     type: String,
     required: false,
+    default: "Search...",
   },
+  api: {
+    type: String,
+    required: false,
 });
 
 // Local state for search input
 const query = ref("");
+
 
 // Emit search query changes
 const handleInput = () => {
