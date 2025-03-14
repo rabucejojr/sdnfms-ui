@@ -15,11 +15,11 @@ const props = defineProps({
   api: {
     type: String,
     required: false,
+  },
 });
 
 // Local state for search input
 const query = ref("");
-
 
 // Emit search query changes
 const handleInput = () => {
