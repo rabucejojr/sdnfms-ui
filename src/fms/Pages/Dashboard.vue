@@ -215,19 +215,33 @@ onMounted(fetchRecentFiles);
       >
         <!-- Table Headers -->
         <template #header>
-          <th class="border p-3 text-left">File Name</th>
-          <th class="border p-3 text-left">Uploaded By</th>
-          <th class="border p-3 text-left">Date</th>
-          <th class="border p-3 text-left">Category</th>
+          <th class="border p-3 text-center">File Name</th>
+          <th class="border p-3 text-center">Uploaded By</th>
+          <th class="border p-3 text-center">Date</th>
+          <th class="border p-3 text-center">Category</th>
           <th class="border p-3 text-center">Actions</th>
         </template>
 
         <!-- Table Rows -->
         <template #row="{ item }">
-          <td class="border p-3">{{ item.filename }}</td>
-          <td class="border p-3">{{ item.uploader }}</td>
-          <td class="border p-3">{{ item.date }}</td>
-          <td class="border p-3">{{ item.category.toUpperCase() }}</td>
+          <td class="border p-3 text-center">{{ item.filename }}</td>
+          <td class="border p-3 text-center">{{ item.uploader }}</td>
+          <td class="border p-3 text-center">{{ item.date }}</td>
+          <td class="border p-2 text-center">
+            <span
+              class="px-4 py-2 text-sm font-semibold rounded-lg inline-block"
+              :class="{
+                'bg-green-200 text-green-800': item.category === 'setup',
+                'bg-yellow-200 text-yellow-800': item.category === 'gia',
+                'bg-blue-200 text-blue-800': item.category === 'others',
+                'bg-gray-200 text-gray-800': !['setup', 'gia', 'others'].includes(
+                  item.category
+                ),
+              }"
+            >
+              {{ item.category.toUpperCase() }}
+            </span>
+          </td>
           <td class="border p-3 text-center space-x-2">
             <div
               class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"

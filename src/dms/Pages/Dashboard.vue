@@ -146,7 +146,11 @@ onMounted(fetchRecentDocuments);
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0"
       >
         <!-- Search Input with Icon -->
-        <SearchComponent :searchQuery="query" api-endpoint="document/search" />
+        <SearchComponent
+          :searchQuery="query"
+          api-endpoint="document/search"
+          placeholder="Trace Document Here..."
+        />
 
         <!-- Upload Button -->
         <Button
@@ -167,25 +171,43 @@ onMounted(fetchRecentDocuments);
       >
         <!-- Table Headers -->
         <template #header>
-          <th class="border p-2">ID</th>
-          <th class="border p-2">Tracking Number</th>
-          <th class="border p-2">Title</th>
-          <th class="border p-2">Subject</th>
-          <th class="border p-2">Status</th>
-          <th class="border p-2">Date Uploaded</th>
-          <th class="border p-2">Deadline</th>
+          <th class="border p-2 text-center">ID</th>
+          <th class="border p-2 text-center">Tracking Number</th>
+          <th class="border p-2 text-center">Title</th>
+          <th class="border p-2 text-center">Subject</th>
+          <th class="border p-2 text-center">Status</th>
+          <th class="border p-2 text-center">Date Uploaded</th>
+          <th class="border p-2 text-center">Deadline</th>
           <th class="border p-2 text-center">Action</th>
         </template>
 
         <!-- Table Rows -->
         <template #row="{ item }">
-          <td class="border p-2">{{ item.id }}</td>
-          <td class="border p-2">{{ item.tracking_number }}</td>
-          <td class="border p-2">{{ item.title }}</td>
-          <td class="border p-2">{{ item.subject }}</td>
-          <td class="border p-2">{{ item.status }}</td>
-          <td class="border p-2">{{ item.date_uploaded }}</td>
-          <td class="border p-2">{{ item.deadline }}</td>
+          <td class="border p-2 text-center">{{ item.id }}</td>
+          <td class="border p-2 text-center">{{ item.tracking_number }}</td>
+          <td class="border p-2 text-center">{{ item.title }}</td>
+          <td class="border p-2 text-center">{{ item.subject }}</td>
+          <td class="border p-2 text-center">
+            <span
+              class="px-4 py-2 text-sm font-semibold rounded-lg"
+              :class="{
+                'bg-green-200 text-green-800': item.status === 'Approved',
+                'bg-yellow-200 text-yellow-800': item.status === 'Processing',
+                'bg-blue-200 text-blue-800': item.status === 'Received',
+                'bg-red-200 text-red-800': item.status === 'Released',
+                'bg-gray-200 text-gray-800': ![
+                  'Approved',
+                  'Processing',
+                  'Received',
+                  'Released',
+                ].includes(item.status),
+              }"
+            >
+              {{ item.status }}
+            </span>
+          </td>
+          <td class="border p-2 text-center">{{ item.date_uploaded }}</td>
+          <td class="border p-2 text-center">{{ item.deadline }}</td>
           <td class="border p-2 text-center space-x-2">
             <div
               class="flex flex-col justify-center sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0"
