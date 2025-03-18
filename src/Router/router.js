@@ -1,14 +1,20 @@
 import {createRouter, createWebHistory } from 'vue-router';
-import Home from '../Pages/Home.vue';
 import { useAuthStore } from '@/stores/authStore';
 import Login from '@/Auth/Login.vue';
 import Register from '@/Auth/Register.vue';
 import dmsDashboard from '@/dms/Pages/Dashboard.vue';
+import Home from '@/fms/Pages/Home.vue';
+import Main from '@/MainDashboard.vue';
+
 
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  {
+    path: '/main',
+    component: Main, meta:{requiresAuth: true},
+  },
   {
     path: '/home',
     component: Home, meta:{requiresAuth: true},

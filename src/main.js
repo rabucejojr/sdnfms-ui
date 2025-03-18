@@ -1,10 +1,9 @@
 import './assets/main.css'
-import router from './fms/Router/router.js'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import VueSelect from 'vue-select'
+import router from './Router/router'
 
 const pinia = createPinia(); // ✅ Create a Pinia instance
 const app = createApp(App);
