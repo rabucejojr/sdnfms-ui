@@ -26,37 +26,25 @@ const closeModal = () => emit("close");
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50"
   >
-    <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6">
       <Modal :isOpen="isOpen" title="Document Details" @close="closeModal">
+        <!-- Modal Header -->
         <template #header>
           <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
             <RiCloseFill />
           </button>
         </template>
+
+        <!-- Modal Body -->
         <template #body>
-          <!-- Modal Body -->
           <div class="space-y-4">
-            <div class="flex items-center justify-start">
-              <h4 class="text-gray-700 font-medium pr-2">Title:</h4>
-              <p type="file" class="text-gray-800">{{ data.title }}</p>
-            </div>
-            <div class="flex items-center justify-start">
-              <h4 class="text-gray-700 font-medium pr-2">Subject:</h4>
-              <p class="text-gray-800">{{ data.subject }}</p>
-            </div>
-            <div class="flex items-center justify-start">
-              <h4 class="text-gray-700 font-medium pr-2">Status:</h4>
-              <p class="text-gray-800">{{ data.status }}</p>
-            </div>
-            <div class="flex items-center justify-start">
-              <h4 class="text-gray-700 font-medium pr-2">Date Uploaded:</h4>
-              <p class="text-gray-800">{{ data.date_uploaded }}</p>
-            </div>
-            <div class="flex items-center justify-start">
-              <h4 class="text-gray-700 font-medium pr-2">Deadline:</h4>
-              <p class="text-gray-800">{{ data.deadline }}</p>
+            <div v-for="(value, key) in data" :key="key" class="flex items-center gap-2">
+              <h4 class="text-gray-600 font-semibold capitalize w-1/3">
+                {{ key.replace("_", " ") }}:
+              </h4>
+              <p class="text-gray-700 w-2/3">{{ value }}</p>
             </div>
           </div>
         </template>
