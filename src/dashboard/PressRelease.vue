@@ -1,4 +1,5 @@
 <script setup>
+import Button from "@/components/Button.vue";
 import Card from "@/components/Card.vue";
 import { ref } from "vue";
 
@@ -26,6 +27,10 @@ const pressReleases = ref([
     bg: "bg-indigo-600",
   },
 ]);
+
+const readMore = () => {
+  console.log("Read more clicked");
+};
 </script>
 
 <template>
@@ -35,7 +40,13 @@ const pressReleases = ref([
       <Card v-for="release in pressReleases" :key="release.id" :bg="release.bg">
         <h3 class="text-xl font-semibold">{{ release.title }}</h3>
         <p class="text-sm text-gray-200">{{ release.date }}</p>
-        <p class="mt-2 text-gray-100">{{ release.content }}</p>
+        <p class="mt-2 mb-2 text-gray-100">{{ release.content }}</p>
+        <Button
+          @click="readMore"
+          bg="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center space-x-2"
+        >
+          <span>Read More</span>
+        </Button>
       </Card>
     </div>
   </div>
