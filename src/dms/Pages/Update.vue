@@ -202,11 +202,6 @@ const handleUpdate = async () => {
             bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
             >Update</Button
           >
-          <Button
-            @click="closeModal"
-            bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-            >Close</Button
-          >
         </template>
       </Modal>
     </div>

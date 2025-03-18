@@ -174,18 +174,14 @@ const handleUpdate = async () => {
 
         <template #footer>
           <!-- Modal Footer -->
-          <Button
-            @click="handleUpdate"
-            bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-          >
-            Update
-          </Button>
-          <Button
-            @click="closeModal"
-            bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-          >
-            Close
-          </Button>
+          <div class="flex justify-center space-x-2 px-6 py-3">
+            <Button
+              @click="handleUpdate"
+              bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              Update
+            </Button>
+          </div>
         </template>
       </Modal>
     </div>

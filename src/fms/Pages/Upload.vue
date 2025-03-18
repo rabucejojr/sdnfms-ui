@@ -200,18 +200,12 @@ const handleUpload = async () => {
       </div>
 
       <!-- Modal footer with action buttons -->
-      <div class="flex justify-end space-x-2 px-6 py-3">
+      <div class="flex justify-center space-x-2 px-6 py-3">
         <Button
           @click="handleUpload"
           bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
         >
           Upload
-        </Button>
-        <Button
-          @click="closeModal"
-          bg="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-        >
-          Close
         </Button>
       </div>
     </div>
