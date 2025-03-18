@@ -5,6 +5,9 @@
     >
       <ul class="flex space-x-4">
         <li>
+          <router-link to="/main" class="hover:underline">Dashboard</router-link>
+        </li>
+        <li>
           <router-link to="/home" class="hover:underline">File Repository</router-link>
         </li>
         <li>
