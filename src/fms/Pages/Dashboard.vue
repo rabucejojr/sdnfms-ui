@@ -22,12 +22,25 @@ defineProps({
   },
 });
 
+// Function to fetch SFTP storage details from Laravel API
+const fetchFileCount = async () => {
+  try {
+    const response = await axios.get(`${API}/sftp/size`);
+    if (response.status === 200) {
+      stats.value.totalFiles = response.data.file_count;
+      stats.value.storageUsed = response.data.storage_used;
+    }
+  } catch (error) {
+    console.error("Error fetching SFTP storage details:", error);
+  }
+};
+
 // Mock statistics data for dashboard overview
 const stats = ref({
-  totalFiles: 120,
+  totalFiles: 0,
   totalUsers: 15,
-  recentUploads: 8,
-  storageUsed: 25.6,
+  totalStorage: 4.69,
+  storageUsed: 0,
 });
 
 // State management for file pagination and search
@@ -158,7 +171,10 @@ const query = (query) => {
 };
 
 // Fetch initial data when component mounts
-onMounted(fetchRecentFiles);
+onMounted(() => {
+  fetchRecentFiles();
+  fetchFileCount();
+});
 </script>
 
 <template>
@@ -177,8 +193,8 @@ onMounted(fetchRecentFiles);
       </Card>
 
       <Card bg="bg-yellow-500">
-        <h2 class="text-sm sm:text-lg font-medium">Recent Uploads</h2>
-        <p class="text-3xl sm:text-4xl font-bold">{{ stats.recentUploads }}</p>
+        <h2 class="text-sm sm:text-lg font-medium">Total Storage</h2>
+        <p class="text-3xl sm:text-4xl font-bold">{{ stats.totalStorage }} TB</p>
       </Card>
 
       <Card bg="bg-red-500">
