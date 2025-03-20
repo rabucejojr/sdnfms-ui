@@ -43,7 +43,7 @@ const readMore = () => {
       <Card
         v-for="release in pressReleases"
         :key="release.id"
-        class="shadow-md p-6 rounded-lg bg-[#5ee9ff]"
+        class="shadow-md p-6 rounded-lg bg-[#54c8f8]"
       >
         <!-- Image Placeholder -->
         <img
@@ -56,7 +56,7 @@ const readMore = () => {
         <p class="text-gray-800 mb-4">{{ release.content }}</p>
         <Button
           @click="readMore"
-          bg="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+          bg="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
         >
           <span>Read More</span>
         </Button>
