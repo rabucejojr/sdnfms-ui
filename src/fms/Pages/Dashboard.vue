@@ -210,7 +210,7 @@ onMounted(() => {
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0"
       >
         <!-- Search Input with Icon -->
-        <SearchComponent :searchQuery="query" />
+        <SearchComponent :searchQuery="query" placeholder="Search Document..." />
 
         <!-- Upload Button Component -->
         <Button
@@ -231,8 +231,8 @@ onMounted(() => {
       >
         <!-- Table Headers -->
         <template #header>
-          <th class="border p-3 text-center">File Name</th>
-          <th class="border p-3 text-center">Uploaded By</th>
+          <th class="border p-3 w-1/4">File Name</th>
+          <th class="border p-3 text-center">Uploader</th>
           <th class="border p-3 text-center">Date</th>
           <th class="border p-3 text-center">Category</th>
           <th class="border p-3 text-center">Actions</th>
@@ -240,7 +240,7 @@ onMounted(() => {
 
         <!-- Table Rows -->
         <template #row="{ item }">
-          <td class="border p-3 text-center">{{ item.filename }}</td>
+          <td class="border p-3">{{ item.filename }}</td>
           <td class="border p-3 text-center">{{ item.uploader }}</td>
           <td class="border p-3 text-center">{{ item.date }}</td>
           <td class="border p-2 text-center">
