@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async register(userData) {
       try {
-        const response = await api.post('/register', userData);
+        const response = await api.post('/users/register', userData);
         
         // Store both token and user data
         this.setAuthData(response.data.token, response.data.user);
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
 
     async login(credentials) {
       try {
-        const response = await api.post('/login', credentials);
+        const response = await api.post('/users/login', credentials);
         this.setAuthData(response.data.token, response.data.user);
         return response;
       } catch (error) {
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
           throw new Error("No token found! You are already logged out.");
         }
     
-        await api.post('/logout', {}, {
+        await api.post('users/logout', {}, {
           headers: { Authorization: `Bearer ${this.token}` }
         });
     
