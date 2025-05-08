@@ -22,16 +22,22 @@ defineProps({
   },
 });
 
+const API = import.meta.env.VITE_API;
+
 // Function to fetch SFTP storage details from Laravel API
-const fetchFileCount = async () => {
+// Consume the /sftp/size API endpoint to get file count, storage used, and total storage
+const fetchNASInfo = async () => {
   try {
     const response = await axios.get(`${API}/sftp/size`);
-    if (response.status === 200) {
+    if (response.status === 200 && response.data) {
       stats.value.totalFiles = response.data.file_count;
-      stats.value.storageUsed = response.data.storage_used;
+      stats.value.storageUsed = response.data.used_storage;
+      if (response.data.total_storage !== undefined) {
+        stats.value.totalStorage = response.data.total_storage;
+      }
     }
   } catch (error) {
-    console.error("Error fetching SFTP storage details:", error);
+    console.error("Error consuming /sftp/size endpoint:", error);
   }
 };
 
@@ -39,7 +45,7 @@ const fetchFileCount = async () => {
 const stats = ref({
   totalFiles: 0,
   totalUsers: 15,
-  totalStorage: 4.69,
+  totalStorage: 0,
   storageUsed: 0,
 });
 
@@ -49,7 +55,6 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const searchQuery = ref("");
 
-const API = import.meta.env.VITE_API;
 
 // Computed properties for filtering and paginating files
 const filteredFiles = computed(() => {
@@ -173,7 +178,7 @@ const query = (query) => {
 // Fetch initial data when component mounts
 onMounted(() => {
   fetchRecentFiles();
-  fetchFileCount();
+  fetchNASInfo();
 });
 </script>
 
