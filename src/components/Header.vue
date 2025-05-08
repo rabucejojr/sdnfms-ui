@@ -1,51 +1,68 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { RiLogoutBoxRLine } from "@remixicon/vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
 import NavigationBar from "./NavigationBar.vue";
 
+// Reactive state
 const currentTime = ref("");
 const currentDate = ref("");
-const router = useRouter();
 const errorMessage = ref("");
 const authStore = useAuthStore();
+const router = useRouter();
 
 defineProps({
   pos: { type: String, default: "" },
 });
 
-const updateDateTime = () => {
-  const now = new Date();
-  currentTime.value = now.toLocaleTimeString("en-US", {
-    timeZone: "Asia/Manila",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-  currentDate.value = now.toLocaleDateString("en-US", {
-    timeZone: "Asia/Manila",
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-};
+let intervalId = null;
 
-const logout = async () => {
+// Helper: Update date and time in Asia/Manila timezone
+const updateDateTime = () => {
   try {
-    await authStore.logout(); // Calls the Pinia store's logout method
-    router.push("/login");
-  } catch (error) {
-    errorMessage.value = error.message || "Logout failed!";
+    const now = new Date();
+    // Use Intl.DateTimeFormat for reliable timezone formatting
+    const timeFormatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Manila",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+    const dateFormatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Manila",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    currentTime.value = timeFormatter.format(now);
+    currentDate.value = dateFormatter.format(now);
+  } catch (e) {
+    // Fallback to local time if Intl fails
+    currentTime.value = now.toLocaleTimeString();
+    currentDate.value = now.toLocaleDateString();
   }
 };
 
-// Initialize and keep updating the time every second
+// Logout handler
+const logout = async () => {
+  try {
+    await authStore.logout?.(); // Defensive: handle undefined logout
+    await router.push("/login");
+  } catch (error) {
+    errorMessage.value = error?.message || "Logout failed!";
+  }
+};
+
+// Start interval on mount, clear on unmount
 onMounted(() => {
   updateDateTime();
-  setInterval(updateDateTime, 1000);
+  intervalId = setInterval(updateDateTime, 1000);
+});
+onBeforeUnmount(() => {
+  if (intervalId) clearInterval(intervalId);
 });
 </script>
 
@@ -62,12 +79,14 @@ onMounted(() => {
           src="@/assets/dostlogo.png"
           alt="DOST Logo"
           class="rounded block md:hidden 2xs:w-[4rem] 2xs:h-[4rem]"
+          loading="lazy"
         />
         <div class="flex items-center my-1 md:my-0 space-x-4">
           <img
             src="@/assets/dostlogo.png"
             alt="DOST Logo"
             class="rounded hidden md:block sm:w-20 sm:h-20"
+            loading="lazy"
           />
           <div class="text-center md:text-left">
             <h1 class="font-bold uppercase text-[10px] sm:text-xs lg:text-sm">
@@ -84,9 +103,9 @@ onMounted(() => {
         <!-- Date and Time -->
         <div class="flex flex-col mt-0">
           <div class="flex flex-col text-center md:text-right lg:text-left lg:flex-row">
-            <p class="text-md content-center sm:text-2xl font-bold">{{ currentTime }}</p>
+            <p class="text-md content-center sm:text-2xl font-bold" aria-live="polite">{{ currentTime }}</p>
             <div class="lg:ml-4">
-              <p class="text-sm lg:text-base">{{ currentDate }}</p>
+              <p class="text-sm lg:text-base" aria-live="polite">{{ currentDate }}</p>
               <p class="text-left uppercase text-[10px] sm:text-xs text-gray-300">
                 Philippine Standard Time
               </p>
@@ -98,10 +117,15 @@ onMounted(() => {
               <button
                 @click="logout"
                 class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center space-x-2 md:text-lg"
+                type="button"
+                aria-label="Logout"
               >
-                <p>Logout</p>
+                <span>Logout</span>
                 <RiLogoutBoxRLine />
               </button>
+            </div>
+            <div v-if="errorMessage" class="text-red-200 text-xs mt-1" role="alert">
+              {{ errorMessage }}
             </div>
           </div>
         </div>
@@ -109,6 +133,6 @@ onMounted(() => {
     </div>
   </header>
   <div>
-    <div><NavigationBar /></div>
+    <NavigationBar />
   </div>
 </template>

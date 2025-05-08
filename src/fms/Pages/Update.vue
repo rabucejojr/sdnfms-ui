@@ -2,7 +2,7 @@
 import Button from "@/components/Button.vue";
 import Modal from "@/components/Modal.vue";
 import { RiCloseFill } from "@remixicon/vue";
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import axios from "axios";
 
 // Props
@@ -35,9 +35,9 @@ const formData = ref({ ...props.data });
 
 // Reactive variables for file data
 const file = ref(null);
-const uploader = ref(formData.value.uploader);
-const category = ref(formData.value.category);
-const date = ref(formData.value.date);
+const uploader = ref(formData.value.uploader || "");
+const category = ref(formData.value.category || "");
+const date = ref(formData.value.date || "");
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 
@@ -50,28 +50,48 @@ const categoryOptions = ref([
   { id: "others", label: "Others" },
 ]);
 
-// Watch for changes in props.data and update formData
+// Watch for changes in props.data and update formData and fields
 watch(
   () => props.data,
   (newData) => {
     formData.value = { ...newData };
-    uploader.value = newData.uploader || "";
-    category.value = newData.category || "";
-    date.value = newData.date || "";
+    uploader.value = newData.uploader ?? "";
+    category.value = newData.category ?? "";
+    date.value = newData.date ?? "";
+    file.value = null;
+    // Reset file input after modal opens with new data
+    nextTick(() => {
+      const fileInput = document.getElementById("file");
+      if (fileInput) fileInput.value = "";
+    });
   },
-  { deep: true }
+  { immediate: true, deep: true }
 );
 
 // Handle file selection
 const onFileChange = (event) => {
-  const selectedFile = event.target.files[0]; // Get the selected file
-  file.value = selectedFile ? selectedFile : null; // Assign file or null
+  const selectedFile = event.target.files && event.target.files[0];
+  file.value = selectedFile || null;
 };
 
 // File Update using API
-const handleUpdate = async () => {
+const handleUpdate = async (e) => {
+  // Prevent double submission
+  if (showSuccessModal.value || showErrorModal.value) return;
+
+  // Validate required fields
   if (!props.data.id) {
     showErrorModal.value = true;
+    setTimeout(() => {
+      showErrorModal.value = false;
+    }, 1200);
+    return;
+  }
+  if (!uploader.value || !category.value || !date.value) {
+    showErrorModal.value = true;
+    setTimeout(() => {
+      showErrorModal.value = false;
+    }, 1200);
     return;
   }
 
@@ -85,31 +105,41 @@ const handleUpdate = async () => {
     payload.append("category", category.value);
     payload.append("date", date.value);
 
-    await axios.post(`${API}/files/${props.data.id}`, payload);
+    const response = await axios.post(`${API}/files/${props.data.id}`, payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-    showSuccessModal.value = true;
+    if (response.status === 200 || response.status === 201) {
+      showSuccessModal.value = true;
 
-    // Close success modal automatically after 1 second
-    setTimeout(() => {
-      showSuccessModal.value = false;
-      closeModal(); // Close the update modal
-    }, 1000);
+      // Refresh file list after update
+      props.fetchRecentFiles?.();
 
-    props.fetchRecentFiles();
+      // Reset form fields
+      file.value = null;
+      uploader.value = "";
+      category.value = "";
+      date.value = "";
+      nextTick(() => {
+        const fileInput = document.getElementById("file");
+        if (fileInput) fileInput.value = "";
+      });
 
-    // Reset form fields
-    file.value = null;
-    uploader.value = "";
-    category.value = "";
-    date.value = "";
-    document.getElementById("file").value = ""; // Reset file input
+      // Close success modal automatically after 1 second
+      setTimeout(() => {
+        showSuccessModal.value = false;
+        closeModal(); // Close the update modal
+      }, 1000);
+    } else {
+      throw new Error("Update failed");
+    }
   } catch (error) {
     showErrorModal.value = true;
     setTimeout(() => {
       showErrorModal.value = false;
       closeModal(); // Close the update modal
-    }, 1000);
-    props.fetchRecentFiles();
+    }, 1200);
+    props.fetchRecentFiles?.();
   }
 };
 </script>
@@ -122,20 +152,22 @@ const handleUpdate = async () => {
     <div class="bg-white rounded-lg shadow-lg w-1/3 max-w-lg">
       <Modal :isOpen="isOpen" title="File Update" @close="closeModal">
         <template #header>
-          <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+          <button @click="closeModal" class="text-gray-400 hover:text-gray-600" type="button">
             <RiCloseFill />
           </button>
         </template>
 
         <template #body>
           <!-- Modal Body -->
-          <form @submit.prevent="handleUpdate" class="space-y-4">
+          <form @submit.prevent="handleUpdate" class="space-y-4" autocomplete="off">
             <div>
               <input
                 type="file"
                 id="file"
                 @change="onFileChange"
                 class="block w-full text-sm text-gray-700 border border-gray-300 rounded p-2"
+                accept="*"
+                autocomplete="off"
               />
             </div>
 
@@ -146,6 +178,8 @@ const handleUpdate = async () => {
                 v-model="uploader"
                 placeholder="Uploader"
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                required
+                autocomplete="off"
               />
             </div>
 
@@ -157,6 +191,8 @@ const handleUpdate = async () => {
                 label="label"
                 :reduce="(option) => option.id"
                 class="w-full"
+                placeholder="Select Category"
+                required
               />
             </div>
 
@@ -167,21 +203,19 @@ const handleUpdate = async () => {
                 v-model="date"
                 placeholder=""
                 class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+                required
+                autocomplete="off"
               />
             </div>
+            <div class="flex justify-center space-x-2 px-6 py-3">
+              <Button
+                type="submit"
+                bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Update
+              </Button>
+            </div>
           </form>
-        </template>
-
-        <template #footer>
-          <!-- Modal Footer -->
-          <div class="flex justify-center space-x-2 px-6 py-3">
-            <Button
-              @click="handleUpdate"
-              bg="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            >
-              Update
-            </Button>
-          </div>
         </template>
       </Modal>
     </div>
@@ -199,7 +233,7 @@ const handleUpdate = async () => {
     <Modal v-if="showErrorModal" :isOpen="showErrorModal" title="Error">
       <template #body>
         <div class="text-center">
-          <p class="text-red-600 font-medium">Failed to update file!</p>
+          <p class="text-red-600 font-medium">Failed to update file! Please check all fields.</p>
         </div>
       </template>
     </Modal>
